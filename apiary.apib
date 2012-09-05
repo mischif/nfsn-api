@@ -198,17 +198,17 @@ Initiate registration for a new member
 POST /member
 > Content-Type: application/json
 {
-    "login": "sample",
-    "name": "Sample User",
-    "email": "sample@example.com",
-    "tacos": true,
-    "reason": "I heard this was the best webhost on the internet :)",
-    "auth": "0102030405060708"
+	"login": "sample",
+	"name": "Sample User",
+	"email": "sample@example.com",
+	"tacos": true,
+	"reason": "I heard this was the best webhost on the internet :)",
+	"auth": "0102030405060708"
 }
 < 202
 < Content-Type: application/json
 {
-    "message": "A confirmation email has been sent to complete registration."
+	"message": "A confirmation email has been sent to complete registration."
 }
 
 Get all information regarding the member profile
@@ -216,12 +216,12 @@ GET /member/sample
 < 200
 < Content-Type: application/json
 {
-    "sample": {
-        "login": "sample",
-        "name": "Sample User",
-        "email": "sample@example.com",
-        "status": "OK",
-        "supportPoints": 10,
+	"sample": {
+		"login": "sample",
+		"name": "Sample User",
+		"email": "sample@example.com",
+		"status": "OK",
+		"supportPoints": 10,
 		"globalSSH": true,
 		"globalFTP": false,
 		"shell": 0,
@@ -232,9 +232,9 @@ GET /member/sample
 		"sessions": [
 			{"start": 1344189552, "duration": 3600, "address": "127.0.0.1", "agent": "Mozilla/5.0 AppleWebKit/535.19 Ubuntu/12.04 Chrome/18.0.1025.168"}
 			],
-        "keys": [
-            {"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@example.com)", "options": ""}
-            ]
+		"keys": [
+			{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@example.com)", "options": ""}
+			]
 		}
 }
 
@@ -255,9 +255,9 @@ GET /member/sample/full
 		"sessions": [
 			{"start": 1344189552, "duration": 3600, "address": "127.0.0.1", "agent": "Mozilla/5.0 AppleWebKit/535.19 Ubuntu/12.04 Chrome/18.0.1025.168"}
 			],
-        "keys": [
-            {"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@example.com)", "options": ""}
-            ],
+		"keys": [
+			{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@example.com)", "options": ""}
+			],
 		"accounts": {
 			"AD20-8675309": {
 				"sname": "business",
@@ -429,8 +429,8 @@ GET /member/sample/full
 				"dns": true,
 				"forwarding": false,
 				"forwards": {"enabled": false},
-                "privacy": {"enabled": false},
-                "nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
+				"privacy": {"enabled": false},
+				"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
 				"registrant": {
 					"company": "",
 					"name": "Sample User",
@@ -469,11 +469,11 @@ GET /member/sample/full
 				"lock": false,
 				"dns": false,
 				"forwarding": true,
-                "forwards": {
-                    "enabled": true,
-                    "sample": "sample@example.com",
-                    "iam": "personal@sample.com"
-    			    },
+				"forwards": {
+					"enabled": true,
+					"sample": "sample@example.com",
+					"iam": "personal@sample.com"
+					},
 				"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
 				"privacy": {
 					"enabled": true,
@@ -1074,7 +1074,7 @@ POST /domains
 	"lock": false,
 	"dns": true,
 	"nameservers": ["ns1.phx.nearlyfreespeech.net","ns2.phx.nearlyfreespeech.net"],
-    "forwards": {"enabled": false},
+	"forwards": {"enabled": false},
 	"privacy": {"enabled": false},
 	"registrant": {
 		"company": "",
@@ -1147,8 +1147,8 @@ GET /domains
 		"status": 1,
 		"lock": false,
 		"dns": true,
-        "forwards": {"enabled": false},
-        "privacy": {"enabled": false},
+		"forwards": {"enabled": false},
+		"privacy": {"enabled": false},
 		"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
 		"registrant": {
 			"company": "",
@@ -1188,7 +1188,7 @@ GET /domains
 		"lock": false,
 		"dns": false,
 		"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
-        "forwards": {"enabled": false},
+		"forwards": {"enabled": false},
 		"privacy": {
 			"enabled": true,
 			"expiry": 1976230924,
@@ -1459,8 +1459,8 @@ GET /db/sample
 < 200
 < Content-Type: application/json
 {
-    "account": "AD20-8675309",
-    "autorestartable": true,
+	"account": "AD20-8675309",
+	"autorestartable": true,
 	"runnable": true,
 	"running": true,
 	"node": "m8 (MySQL 5.0)",
@@ -1495,7 +1495,7 @@ File a support request
 POST /support
 > Content-Type: application/json
 {
-    "type": 0,
+	"type": 0,
 	"urgent": false,
 	"subject": "Restore from backup",
 	"body": "My blog got hacked yesterday and I need to restore it from my backups"
@@ -1504,10 +1504,10 @@ POST /support
 < Content-Type: application/json
 < Content-Location: https://api.nearlyfreespeech.net/v2/support/123456
 {
-    "ticket": 123456,
-    "status": "Available",
-    "subject": "Restore from backup",
-    "1346529600": {"from": "Sample User", "body": "My blog got hacked yesterday and I need to restore it from my backups"}
+	"ticket": 123456,
+	"status": "Available",
+	"subject": "Restore from backup",
+	"1346529600": {"from": "Sample User", "body": "My blog got hacked yesterday and I need to restore it from my backups"}
 }
 
 Find all open and recently-closed support requests
@@ -1515,20 +1515,20 @@ GET /support
 < 200
 < Content-Type: application/json
 {
-    "open": [{
-            "ticket": 123456,
-            "status": "In Queue",
-            "subject": "Restore from backup",
-            "1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-            "1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
-            }],
-    "closed": [{
-        "ticket": 112358,
-        "status": "Pending Auto-Close",
-        "subject": "Request an API key",
-        "1345115700": {"from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
-        "1345122900": {"from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
-        }]
+	"open": [{
+			"ticket": 123456,
+			"status": "In Queue",
+			"subject": "Restore from backup",
+			"1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+			"1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+			}],
+	"closed": [{
+		"ticket": 112358,
+		"status": "Pending Auto-Close",
+		"subject": "Request an API key",
+		"1345115700": {"from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
+		"1345122900": {"from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
+		}]
 }
 
 Get details of support issue
@@ -1536,28 +1536,28 @@ GET /support/123456
 < 200
 < Content-Type: application/json
 {
-    "ticket": 123456,
-    "status": "In Queue",
-    "subject": "Restore from backup",
-    "1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-    "1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+	"ticket": 123456,
+	"status": "In Queue",
+	"subject": "Restore from backup",
+	"1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+	"1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
 }
 
 Respond to a support issue that has already been created
 POST /support/123456
 > Content-Type: application/json
 {
-    "message": "Thanks :)"
+	"message": "Thanks :)"
 }
 < 200
 < Content-Type: application/json
 {
-    "ticket": 123456,
-    "status": "In Queue",
-    "subject": "Restore from backup",
-    "1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-    "1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."},
-    "1346541300": {"from": "Sample User", "message": "Thanks :)"}
+	"ticket": 123456,
+	"status": "In Queue",
+	"subject": "Restore from backup",
+	"1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+	"1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."},
+	"1346541300": {"from": "Sample User", "message": "Thanks :)"}
 }
 
 --
@@ -1707,83 +1707,3 @@ GET /oldChallenge
 	"reference": "http://docs.mischif.apiary.io/",
 	"response": {}
 }
-
-<!--<table>
-	<tr>
-		<td>RQ/RS</td>
-		<td>Param</td>
-		<td>Required</td>
-		<td>Description</td>
-		<td>Notes</td>
-	</tr>
-	<tr>
-		<td>RQ</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RQ</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RQ</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RQ</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RQ</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RS</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RS</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RS</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RS</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-	<tr>
-		<td>RS</td>
-		<td>Name</td>
-		<td>Yes</td>
-		<td>Description of the param</td>
-		<td></td>
-	</tr>
-</table>-->
