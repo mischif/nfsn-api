@@ -14,8 +14,8 @@ Member-Related and Site-Related option values:
 <table>
 <tr>
 <td>Opt. #</td>
-<td>Bandwidth Summary</td>
-<td>Storage Summary</td>
+<td>Bandwidth Report</td>
+<td>Storage Report</td>
 <td>Shell</td>
 <td>Site Type</td>
 <td>CGI Realm</td>
@@ -732,6 +732,41 @@ GET /accounts
 		}
 }
 
+Get a storage summary regarding all sites attached to a specific account
+GET /accounts/AD20-8675309/storage
+< 200
+< Content-Type: application/json
+{
+	"sample": 78418944,
+	"total": 78418944
+}
+
+Get a bandwidth summary regarding all sites attached to a specific account
+GET /accounts/AD20-8675309/bandwidth/5
+< 200
+< Content-Type: application/json
+{
+	"image": ,
+	"1342396799": {
+					"sample": 6467166,
+					"total": 6467166
+					},
+	"1343001599": {
+					"sample": 6333859,
+					"total": 6333859
+
+					},
+	"1343606399": {
+					"sample": 4095185,
+					"total": 4095185
+					},
+	"1344211199": {
+					"sample": 1858923,
+					"total": 1858923
+					},
+	"total": 18755133
+}
+
 Get all information regarding the specified account
 GET /accounts/AD20-8675309
 < 200
@@ -780,10 +815,11 @@ GET /accounts/AD20-8675309/fresh
 	"modified": 1344180247,
 }
 
-Modify balance warnings and contact information for an account
+Modify shortname, balance warnings and contact information for an account
 PUT /accounts/AD20-8675309
 > Content-Type: application/json
 {
+	"sname": "work",
 	"warnings": [500,1100],
 	"contact": {
 		"name": "Example User",
@@ -1007,7 +1043,7 @@ GET /sites/sample/fresh
 	"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"]
 }
 
-Return a storage summary for the desired report period
+Return storage activity for the desired report period
 GET /sites/sample/storage/0
 < 200
 < Content-Type: application/json
@@ -1024,7 +1060,7 @@ GET /sites/sample/storage/0
 		}
 }
 
-Return a bandwidth summary for the desired report period
+Return bandwidth activity for the desired report period
 GET /sites/sample/bandwidth/0
 < 200
 < Content-Type: application/json
