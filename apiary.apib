@@ -3,12 +3,14 @@ HOST: https://api.nearlyfreespeech.net/v2
 --- NFS.net API V2 ---
 ---
 This is a reference implementation and corresponding documentation for a candidate of the next version of the NearlyFreeSpeech.net API.
-For the sake of simplicity, this implementation will operate on a sample member.
+For the sake of simplicity, this reference will operate on a sample member.
 
 All clients must accept and produce UTF-8 encoded JSON as specified in [RFC 4627](http://tools.ietf.org/html/rfc4627).
 All clients must operate over TLS at all times.
 All request body names must be in lowercase.
-All values are to be submitted in their lowest common denomination (e.g., cents over dollars, bytes over gigabytes, epoch seconds over date/time).
+Monetary values are to be expressed in cents.
+Data values are to be expressed in bytes.
+Time values are to be expressed in epoch seconds.
 
 Member-Related and Site-Related option values:
 <table>
@@ -201,7 +203,6 @@ POST /member
 	"login": "sample",
 	"name": "Sample User",
 	"email": "sample@sample.com",
-	"tacos": true,
 	"reason": "I heard this was the best webhost on the internet :)",
 	"auth": "0102030405060708"
 }
@@ -211,39 +212,14 @@ POST /member
 	"message": "A confirmation email has been sent to complete registration."
 }
 
-Get all information regarding the member profile
-GET /member/sample
+Get full information about a membership and affiliated accounts, sites, domains and databases
+GET /member
 < 200
 < Content-Type: application/json
 {
 	"login": "sample",
 	"name": "Sample User",
-	"email": "sample@sample.com",
-	"status": "OK",
-	"supportPoints": 10,
-	"globalSSH": true,
-	"globalFTP": false,
-	"shell": 0,
-	"accounts": ["AD20-8675309","0541-CA1CBADD"],
-	"sites": ["sample","sample2","sample3"],
-	"domains": ["sample.com","samp.le"],
-	"databases": ["sample"],
-	"sessions": [
-		{"start": 1344189552, "duration": 3600, "address": "127.0.0.1", "agent": "Mozilla/5.0 AppleWebKit/535.19 Ubuntu/12.04 Chrome/18.0.1025.168"}
-		],
-	"keys": [
-		{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@sample.com)", "options": ""}
-		]
-}
-
-Get all information regarding the member's profile, accounts, sites, domains and databases
-GET /member/sample/full
-< 200
-< Content-Type: application/json
-{
-	"login": "sample",
-	"name": "Sample User",
-	"email": "sample@sample.com",
+	"email": "sample@sampledoma.in",
 	"status": "OK",
 	"supportPoints": 10,
 	"globalSSH": true,
@@ -255,293 +231,372 @@ GET /member/sample/full
 	"keys": [
 		{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@sample.com)", "options": ""}
 		],
-	"accounts": {
-		"AD20-8675309": {
-			"sname": "business",
-			"number": "AD20-8675309",
-			"status": "OK",
-			"xferTotal": 237060719903,
-			"warnings": [500,100],
-			"balance": 1420,
-			"xferRate": 16242304,
-			"xferUnbilled": 22597911,
-			"storageUnbilled": 18967354,
-			"created": 1041480306,
-			"charged": 1344180247,
-			"modified": 1344180247,
-			"contact": {
-				"oname": "Sample Corp",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave",
-				"city": "Washington, D.C.",
-				"state": "",
-				"postal": 20204,
-				"country": "US",
-				"phone": "2027737433",
-				"emergency": "sample@sample.com"
-				},
-			"activity": {
-				"current": [["sample Site Charge",1],["sample.db MySQL Charge",2],["Storage Charge",30]],
-				"recurring": [["Dynamic Sites","$0.01/day (1 site)"],["DNS","$0.00111/day (1 zone, 1 registered & hosted)"],
-				["MySQL","$0.02/day (1 process)"],["RespectMyPrivacy","$0.00/day (1 private domain, 1 prepaid)"]]
-				}
+	"accounts": [
+		{"sname": "business",
+		"number": "AD20-8675309",
+		"status": "OK",
+		"xferTotal": 237060719903,
+		"warnings": [500,100],
+		"balance": 1420,
+		"xferRate": 16242304,
+		"xferUnbilled": 22597911,
+		"storageUnbilled": 18967354,
+		"created": 1041480306,
+		"charged": 1344180247,
+		"modified": 1344180247,
+		"contact": {
+			"oname": "Sample Corp",
+			"name": "Sample User",
+			"address": "1600 Pennsylvania Ave",
+			"city": "Washington, D.C.",
+			"state": "",
+			"postal": 20204,
+			"country": "US",
+			"phone": "2027737433",
+			"emergency": "sample@sample.com"
 			},
-		"0541-CA1CBADD": {
-			"sname": "personal",
-			"number": "0541-CA1CBADD",
-			"status": "OK",
-			"xferTotal": 23697482056,
-			"warnings": [500,100],
-			"balance": 719,
-			"xferRate": 13729026,
-			"xferUnbilled": 22597911,
-			"storageUnbilled": 18967354,
-			"created": 1144198923,
-			"charged": 1344564246,
-			"modified": 1344564246,
-			"contact": {
-				"oname": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave",
-				"city": "Washington, D.C.",
-				"state": "",
-				"postal": 20204,
-				"country": "US",
-				"phone": "2027737433",
-				"emergency": "sample@samp.le"
-				},
-			"activity": {
-				"current": [["sample2 Site Charge",1],["sample3 Site Charge",1],["Storage Charge",30]],
-				"recurring": [["Dynamic Sites","$0.02/day (2 sites)"],["DNS","$0.00111/day (1 zone, 1 registered & hosted)"],
-				["MySQL","$0.02/day (1 process)"],["RespectMyPrivacy","$0.00/day (1 private domain, 1 prepaid)"]]
-				}
-			}
-		},
-	"sites": {
-		"sample": {
-			"sname": "sample",
-			"username": "sample_sample",
-			"cname": "sample.nfshost.com",
-			"ctype": 2,
-			"type": 5,
-			"root": "/f2/sample/",
-			"realm": 2,
-			"enabled": true,
-			"control": "Allow All",
-			"admin": "nobody",
-			"bank": 100,
-			"account": "AD20-8675309",
-			"sshHostname": "ssh.phx.nearlyfreespeech.net",
-			"ftpHostname": "ftp.phx.nearlyfreespeech.net",
-			"sshAccess": true,
-			"ftpAccess": false,
-			"alog": false,
-			"elog": false,
-			"rlog": 0,
-			"rotation": 0,
-			"compression": 0,
-			"created": 1139040612,
-			"xferUnbilled": 13524972,
-			"storageUnbilled": 26163811,
-			"repSize": 78418944,
-			"lbackup": 1344197191,
-			"rbackup": 1344197191,
-			"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
-			"adjuncts": ["member1","member2"],
-			"aliases": ["www.sample.com","sample.nfshost.com"]
-			},
-		"sample2": {
-			"sname": "sample2",
-			"username": "sample_sample2",
-			"cname": "sample2.nfshost.com",
-			"ctype": 1,
-			"type": 5,
-			"root": "/f5/sample2/",
-			"realm": 2,
-			"enabled": true,
-			"control": "Allow All",
-			"admin": "nobody",
-			"bank": 52,
-			"account": "0541-CA1CBADD",
-			"sshHostname": "ssh.phx.nearlyfreespeech.net",
-			"ftpHostname": "ftp.phx.nearlyfreespeech.net",
-			"sshAccess": true,
-			"ftpAccess": false,
-			"alog": false,
-			"elog": false,
-			"rlog": 0,
-			"rotation": 0,
-			"compression": 0,
-			"created": 1310173385,
-			"xferUnbilled": 13524972,
-			"storageUnbilled": 26163811,
-			"repSize": 134850810,
-			"lbackup": 1344197191,
-			"rbackup": 0,
-			"addresses": ["13.14.15.16","17.18.19.20","21.22.23.24"],
-			"adjuncts": [],
-			"aliases": ["www.examp.le","sample2.nfshost.com"]
-			},
-		"sample3": {
-			"sname": "sample",
-			"username": "sample_sample",
-			"cname": "sample.nfshost.com",
-			"ctype": 0,
-			"type": 5,
-			"root": "/f1/sample3/",
-			"realm": 2,
-			"enabled": false,
-			"control": "Allow All",
-			"admin": "nobody",
-			"bank": 96,
-			"account": "0541-CA1CBADD",
-			"sshHostname": "ssh.phx.nearlyfreespeech.net",
-			"ftpHostname": "ftp.phx.nearlyfreespeech.net",
-			"sshAccess": true,
-			"ftpAccess": false,
-			"alog": false,
-			"elog": false,
-			"rlog": 0,
-			"rotation": 0,
-			"compression": 0,
-			"created": 1310173385,
-			"xferUnbilled": 13524972,
-			"storageUnbilled": 26163811,
-			"repSize": 78418944,
-			"lbackup": 1344197191,
-			"rbackup": 0,
-			"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
-			"adjuncts": ["member1","member2"],
-			"aliases": ["sample3.nfshost.com"]
-			}
-		},
-	"domains": {
-		"sample.com": {
-			"account": "AD20-8675309",
-			"expiration": 1656892800,
-			"deletion": 1656892800,
-			"renewal": 0,
-			"status": 1,
-			"lock": false,
-			"dns": true,
-			"forwards": {"enabled": false},
-			"privacy": {"enabled": false},
-			"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
-			"registrant": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				},
-			"adminContact": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				},
-			"techContact": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				},
-			"billContact": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				}
-			},
-		"samp.le": {
-			"account": "0541-CA1CBADD",
-			"expiration": 1976230924,
-			"deletion": 1976230924,
-			"renewal": 0,
-			"status": 1,
-			"lock": false,
-			"dns": false,
-			"forwards": {
-				"enabled": true,
-				"sample": "sample@sample.com",
-				"iam": "personal@sample.com"
-				},
-			"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
-			"privacy": {
-				"enabled": true,
-				"expiry": 1976230924
-				"prepaid": false
-				},
-			"registrant": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				},
-			"adminContact": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				},
-			"techContact": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				},
-			"billContact": {
-				"company": "",
-				"name": "Sample User",
-				"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-				"phone": "2027737433",
-				"fax": ""
-				}
-			}
-		},
-	"dns": {
-		"sample.com": {
-			"account": "AD20-8675309",
-			"bareDomain": false,
-			"enabled": true,
-			"spf": false,
-			"records": [
-				{"id": 10000, "name": "", "type": "MX", "data": "1 ASPMX.L.GOOGLE.COM."},
-				{"id": 10001, "name": "", "type": "MX", "data": "5 ALT1.ASPMX.L.GOOGLE.COM."},
-				{"id": 10002, "name": "", "type": "MX", "data": "10 ASPMX2.GOOGLEMAIL.COM."},
-				{"id": 10003, "name": "static", "type": "CNAME", "data": "static.sample.com.s3.amazonaws.com."},
-				{"id": 10004, "name": "www", "type": "CNAME", "data": "sample.nfshost.com."}
+		"activity": {
+			"current": [
+				{"name": "samplesite Site Charge", "charge": 1, "note": ""},
+				{"name": "sampledb MySQL Charge", "charge": 2, "note": ""},
+				{"name": "Storage Charge", "charge": 30, "note": ""}
+				],
+			"recurring": [
+				{"name": "Dynamic Sites", "charge": 1, "note": "1 site"},
+				{"name": "DNS", "charge": 0.111, "note": "1 zone, 1 registered & hosted"},
+				{"name": "MySQL", "charge": 2, "note": "1 process"},
+				{"name": "RespectMyPrivacy", "charge": 0, "note": "1 private domain, 1 prepaid"}
 				]
 			}
 		},
-	"database": {
-		"sample": {
-			"account": "AD20-8675309",
-			"autorestartable": true,
-			"runnable": true,
-			"running": true,
-			"node": "m8 (MySQL 5.0)",
-			"size": 3260416
+		{"sname": "personal",
+		"number": "0541-CA1CBADD",
+		"status": "OK",
+		"xferTotal": 23697482056,
+		"warnings": [500,100],
+		"balance": 719,
+		"xferRate": 13729026,
+		"xferUnbilled": 22597911,
+		"storageUnbilled": 18967354,
+		"created": 1144198923,
+		"charged": 1344564246,
+		"modified": 1344564246,
+		"contact": {
+			"oname": "",
+			"name": "Sample User",
+			"address": "1600 Pennsylvania Ave",
+			"city": "Washington, D.C.",
+			"state": "",
+			"postal": 20204,
+			"country": "US",
+			"phone": "2027737433",
+			"emergency": "sample@samp.le"
+			},
+		"activity": {
+			"current": [
+				{"name": "samplesite2 Site Charge", "charge": 1,"note": ""},
+				{"name": "samplesite3 Site Charge", "charge": 1,"note": ""},
+				{"name": "Storage Charge", "charge": 30, "note": ""}
+				],
+			"recurring": [
+				{"name": "Dynamic Sites", "charge": 2, "note": "2 sites"},
+				{"name": "Email Forwarding", "charge": 3, "note": "1 site"}
+				{"name": "RespectMyPrivacy", "charge": 1, "note": "1 private domain, 0 prepaid"}
+				]
 			}
+		}],
+	"sites": [
+		{"sname": "samplesite",
+		"username": "sample_samplesite",
+		"adjunct": false,
+		"cname": "www.sample.com",
+		"ctype": 2,
+		"type": 5,
+		"root": "/f2/samplesite/",
+		"realm": 2,
+		"enabled": true,
+		"control": "Allow All",
+		"admin": "nobody",
+		"bank": 100,
+		"account": "AD20-8675309",
+		"sshHostname": "ssh.phx.nearlyfreespeech.net",
+		"ftpHostname": "ftp.phx.nearlyfreespeech.net",
+		"sshAccess": true,
+		"ftpAccess": false,
+		"alog": false,
+		"elog": false,
+		"rlog": 0,
+		"rotation": 0,
+		"compression": 0,
+		"created": 1139040612,
+		"xferUnbilled": 13524972,
+		"storageUnbilled": 26163811,
+		"repSize": 78418944,
+		"lbackup": 1344197191,
+		"rbackup": 1344197191,
+		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+		"adjuncts": ["member1","member2"],
+		"aliases": ["www.sample.com","samplesite.nfshost.com"]
+		},
+		{"sname": "samplesite2",
+		"username": "sample_samplesite2",
+		"adjunct": false,
+		"cname": "www.examp.le",
+		"ctype": 1,
+		"type": 5,
+		"root": "/f5/samplesite2/",
+		"realm": 2,
+		"enabled": true,
+		"control": "Allow All",
+		"admin": "nobody",
+		"bank": 52,
+		"account": "0541-CA1CBADD",
+		"sshHostname": "ssh.phx.nearlyfreespeech.net",
+		"ftpHostname": "ftp.phx.nearlyfreespeech.net",
+		"sshAccess": true,
+		"ftpAccess": false,
+		"alog": false,
+		"elog": false,
+		"rlog": 0,
+		"rotation": 0,
+		"compression": 0,
+		"created": 1310173385,
+		"xferUnbilled": 13524972,
+		"storageUnbilled": 26163811,
+		"repSize": 134850810,
+		"lbackup": 1344197191,
+		"rbackup": 0,
+		"addresses": ["13.14.15.16","17.18.19.20","21.22.23.24"],
+		"adjuncts": [],
+		"aliases": ["www.examp.le","samplesite2.nfshost.com"]
+		},
+		{"sname": "samplesite3",
+		"username": "sample_samplesite3",
+		"adjunct": false,
+		"cname": "samplesite3.nfshost.com",
+		"ctype": 0,
+		"type": 5,
+		"root": "/f1/samplesite3/",
+		"realm": 2,
+		"enabled": false,
+		"control": "Allow All",
+		"admin": "nobody",
+		"bank": 96,
+		"account": "0541-CA1CBADD",
+		"sshHostname": "ssh.phx.nearlyfreespeech.net",
+		"ftpHostname": "ftp.phx.nearlyfreespeech.net",
+		"sshAccess": true,
+		"ftpAccess": false,
+		"alog": false,
+		"elog": false,
+		"rlog": 0,
+		"rotation": 0,
+		"compression": 0,
+		"created": 1310173385,
+		"xferUnbilled": 13524972,
+		"storageUnbilled": 26163811,
+		"repSize": 78418944,
+		"lbackup": 1344197191,
+		"rbackup": 0,
+		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+		"adjuncts": ["member1","member3"],
+		"aliases": ["samplesite3.nfshost.com"]
+		},
+		{"sname": "sampleadjunct",
+		"username": "sample_sampleadjunct",
+		"cname": "sampleadjunct.nfshost.com",
+		"status": 0,
+		"adjunct": true,
+		"sponsor": "member2",
+		"sshHostname": "ssh.phx.nearlyfreespeech.net",
+		"ftpHostname": "ftp.phx.nearlyfreespeech.net",
+		"sshAccess": true,
+		"ftpAccess": false,
+		"aliases": ["sampleadjunct.nfshost.com"]
+		}],
+	"domains": [
+		{"name": "sample.com",
+		"account": "AD20-8675309",
+		"expiration": 1656892800,
+		"deletion": 1656892800,
+		"renewal": 0,
+		"status": 1,
+		"lock": true,
+		"dns": true,
+		"forwards": {"enabled": false},
+		"privacy": {"enabled": false},
+		"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
+		"registrant": {
+			"company": "",
+			"name": "Sample User",
+			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
+			"phone": "2027737433",
+			"fax": ""
+			},
+		"adminContact": {
+			"company": "",
+			"name": "Sample User",
+			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
+			"phone": "2027737433",
+			"fax": ""
+			},
+		"techContact": {
+			"company": "",
+			"name": "Sample User",
+			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
+			"phone": "2027737433",
+			"fax": ""
+			},
+		"billContact": {
+			"company": "",
+			"name": "Sample User",
+			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
+			"phone": "2027737433",
+			"fax": ""
+			}
+		},
+		{"name": "samp.le",
+		"account": "0541-CA1CBADD",
+		"expiration": 1976230924,
+		"deletion": 1976230924,
+		"renewal": 0,
+		"status": 1,
+		"lock": true,
+		"dns": false,
+		"forwards": {
+			"enabled": true,
+			"sample": "sample@sample.com",
+			"iam": "personal@sample.com"
+			},
+		"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
+		"privacy": {
+			"enabled": true,
+			"expiry": 1976230924,
+			"prepaid": false
+			},
+		"registrant": {
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
+			},
+		"adminContact": {
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
+			},
+		"techContact": {
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
+			},
+		"billContact": {
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
+			}
+		}],
+	"dns": [
+		{"name": "sample.com",
+		"account": "AD20-8675309",
+		"bareDomain": false,
+		"enabled": true,
+		"spf": false,
+		"records": [
+			{"id": 10000, "name": "", "type": "MX", "data": "1 ASPMX.L.GOOGLE.COM."},
+			{"id": 10001, "name": "", "type": "MX", "data": "5 ALT1.ASPMX.L.GOOGLE.COM."},
+			{"id": 10002, "name": "", "type": "MX", "data": "10 ASPMX2.GOOGLEMAIL.COM."},
+			{"id": 10003, "name": "static", "type": "CNAME", "data": "static.sample.com.s3.amazonaws.com."},
+			{"id": 10004, "name": "www", "type": "CNAME", "data": "sample.nfshost.com."}
+			]
+		}],
+	"databases": [
+		{"name": "sampledb",
+		"account": "AD20-8675309",
+		"autorestartable": true,
+		"runnable": true,
+		"running": true,
+		"node": "m8",
+		"type": "MySQL 5.0",
+		"size": 3260416
 		}
+	],
+	"openSupport": [{
+		"ticket": 123456,
+		"status": "In Queue",
+		"subject": "Restore from backup",
+		"messages": [
+			{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+			{"time": 1346537700, "from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+			]
+		}],
+	"closedSupport": [{
+		"ticket": 112358,
+		"status": "Pending Auto-Close",
+		"subject": "Request an API key",
+		"messages": [
+			{"time": 1345115700, "from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
+			{"time": 1345122900, "from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
+			]
+		}]
 }
 
-Update the member's shell choice, email address or global FTP status
-PUT /member/sample
+Get basic information about a membership and affiliated accounts, sites, domains and databases
+GET /member/basic
+< 200
+< Content-Type: application/json
+{
+	"login": "sample",
+	"name": "Sample User",
+	"email": "sample@sample.com",
+	"status": 0,
+	"supportPoints": 10,
+	"globalSSH": true,
+	"globalFTP": false,
+	"shell": 0,
+	"accounts": ["AD20-8675309","0541-CA1CBADD"],
+	"sites": ["samplesite","samplesite2","samplesite3", "sampleadjunct"],
+	"domains": ["sample.com","samp.le"],
+	"dns": ["sample.com"],
+	"databases": ["sampledb"],
+	"openSupport": [123456],
+	"closedSupport": [112358]
+	"sessions": [
+		{"start": 1344189552, "duration": 3600, "address": "127.0.0.1", "agent": "Mozilla/5.0 AppleWebKit/535.19 Ubuntu/12.04 Chrome/18.0.1025.168"}
+		],
+	"keys": [
+		{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@sample.com)", "options": ""}
+		]
+}
+
+Update the member's shell choice or global FTP status
+PUT /member
 > Content-Type: application/json
 {
 	"shell": 2,
-	"globalFTP": true,
-	"email": "newaddress@sample.com"
+	"globalFTP": true
 }
 < 205
 
+
+Update the member's email address
+PUT /member
+> Content-Type: application/json
+{
+	"email": sample@sam.pl
+}
+< 202
+< Content-Type: application/json
+{
+	"message": "A confirmation email has been sent to complete update."
+}
 
 --
 Account Endpoints
@@ -633,39 +688,10 @@ POST /accounts/deposits
 	"fee": 150,
 	"rebate": 65,
 	"nDeposit": 1415,
-	"account": {
-		"sname": "personal",
-		"number": "0541-CA1CBADD",
-		"status": "OK",
-		"xferTotal": 23697482056,
-		"warnings": [500,100],
-		"balance": 2134,
-		"xferRate": 13729026,
-		"xferUnbilled": 22597911,
-		"storageUnbilled": 18967354,
-		"created": 1144198923,
-		"charged": 1344564246,
-		"modified": 1344564246,
-		"contact": {
-			"oname": "",
-			"name": "Sample User",
-			"address": "1600 Pennsylvania Ave",
-			"city": "Washington, D.C.",
-			"state": "",
-			"postal": "20204",
-			"country": "US",
-			"phone": "2027737433",
-			"emergency": "sample@samp.le"
-			},
-		"activity": {
-			"current": [["sample2 Site Charge",1],["sample3 Site Charge",1],["Storage Charge",30]],
-			"recurring": [["Dynamic Sites","$0.02/day (2 sites)"],["DNS","$0.00111/day (1 zone, 1 registered & hosted)"],
-			["MySQL","$0.02/day (1 process)"],["RespectMyPrivacy","$0.00/day (1 private domain, 1 prepaid)"]]
-			}
-		}
+	"balance": 2134
 }
 
-Get the list of accounts a member owns
+Get the list of accounts attached to a membership
 GET /accounts
 < 200
 < Content-Type: application/json
@@ -695,9 +721,17 @@ GET /accounts
 			"emergency": "sample@sample.com"
 			},
 		"activity": {
-			"current": [["sample Site Charge",1],["sample.db MySQL Charge",2],["Storage Charge",30]],
-			"recurring": [["Dynamic Sites","$0.01/day (1 site)"],["DNS","$0.00111/day (1 zone, 1 registered & hosted)"],
-			["MySQL","$0.02/day (1 process)"],["RespectMyPrivacy","$0.00/day (1 private domain, 1 prepaid)"]]
+			"current": [
+				{"name": "samplesite Site Charge", "charge": 1, "note": ""},
+				{"name": "sample.db MySQL Charge", "charge": 2, "note": ""},
+				{"name": "Storage Charge", "charge": 30, "note": ""}
+				],
+			"recurring": [
+				{"name": "Dynamic Sites", "charge": 1, "note": "1 site"},
+				{"name": "DNS", "charge": 0.111, "note": "1 zone, 1 registered & hosted"},
+				{"name": "MySQL", "charge": 2, "note": "1 process"},
+				{"name": "RespectMyPrivacy", "charge": 0, "note": "1 private domain, 1 prepaid"}
+				]
 			}
 		},
 	"0541-CA1CBADD": {
@@ -725,20 +759,38 @@ GET /accounts
 			"emergency": "sample@samp.le"
 			},
 		"activity": {
-			"current": [["sample2 Site Charge",1],["sample3 Site Charge",1],["Storage Charge",30]],
-			"recurring": [["Dynamic Sites","$0.02/day (2 sites)"],["DNS","$0.00111/day (1 zone, 1 registered & hosted)"],
-			["MySQL","$0.02/day (1 process)"],["RespectMyPrivacy","$0.00/day (1 private domain, 1 prepaid)"]]
+			"current": [
+				{"name": "samplesite2 Site Charge", "charge": 1,"note": ""},
+				{"name": "samplesite3 Site Charge", "charge": 1,"note": ""},
+				{"name": "Storage Charge", "charge": 30, "note": ""}
+				],
+			"recurring": [
+				{"name": "Dynamic Sites", "charge": 2, "note": "2 sites"},
+				{"name": "DNS", "charge": 0.111, "note": "1 zone, 1 registered & hosted"},
+				{"name": "MySQL", "charge": 2, "note": "1 process"},
+				{"name": "RespectMyPrivacy", "charge": 0, "note": "1 private domain, 1 prepaid"}
+				]
 			}
 		}
 }
 
 Get a storage summary regarding all sites attached to a specific account
+<<<<<<< HEAD
 GET /accounts/AD20-8675309/storage
 < 200
 < Content-Type: application/json
 {
 	"sample": 78418944,
 	"total": 78418944
+=======
+GET /accounts/0541-CA1CBADD/storage
+< 200
+< Content-Type: application/json
+{
+	"samplesite2": 134850810,
+	"samplesite3": 78418944,
+	"total": 213269754
+>>>>>>> Added support info to member objects
 }
 
 Get a bandwidth summary regarding all sites attached to a specific account
@@ -746,6 +798,7 @@ GET /accounts/AD20-8675309/bandwidth/5
 < 200
 < Content-Type: application/json
 {
+<<<<<<< HEAD
 	"image": ,
 	"1342396799": {
 					"sample": 6467166,
@@ -753,21 +806,42 @@ GET /accounts/AD20-8675309/bandwidth/5
 					},
 	"1343001599": {
 					"sample": 6333859,
+=======
+	"image": "http://api.nearlyfreespeech.net/v2/pictures/picture.png",
+	"1342396799": {
+					"samplesite": 6467166,
+					"total": 6467166
+					},
+	"1343001599": {
+					"samplesite": 6333859,
+>>>>>>> Added support info to member objects
 					"total": 6333859
 
 					},
 	"1343606399": {
+<<<<<<< HEAD
 					"sample": 4095185,
 					"total": 4095185
 					},
 	"1344211199": {
 					"sample": 1858923,
+=======
+					"samplesite": 4095185,
+					"total": 4095185
+					},
+	"1344211199": {
+					"samplesite": 1858923,
+>>>>>>> Added support info to member objects
 					"total": 1858923
 					},
 	"total": 18755133
 }
 
+<<<<<<< HEAD
 Get all information regarding the specified account
+=======
+Get all information regarding a specified account
+>>>>>>> Added support info to member objects
 GET /accounts/AD20-8675309
 < 200
 < Content-Type: application/json
@@ -796,19 +870,27 @@ GET /accounts/AD20-8675309
 		"emergency": "sample@sample.com"
 		},
 	"activity": {
-		"current": [["sample Site Charge",1],["sample.db MySQL Charge",2],["Storage Charge",30]],
-		"recurring": [["Dynamic Sites","$0.01/day (1 site)"],["DNS","$0.00111/day (1 zone, 1 registered & hosted)"],
-		["MySQL","$0.02/day (1 process)"],["RespectMyPrivacy","$0.00/day (1 private domain, 1 prepaid)"]]
+		"current": [
+			{"name": "samplesite Site Charge", "charge": 1, "note": ""},
+			{"name": "sample.db MySQL Charge", "charge": 2, "note": ""},
+			{"name": "Storage Charge", "charge": 30, "note": ""}
+			],
+		"recurring": [
+			{"name": "Dynamic Sites", "charge": 1, "note": "1 site"},
+			{"name": "DNS", "charge": 0.111, "note": "1 zone, 1 registered & hosted"},
+			{"name": "MySQL", "charge": 2, "note": "1 process"},
+			{"name": "RespectMyPrivacy", "charge": 0, "note": "1 private domain, 1 prepaid"}
+			]
 		}
 }
 
 Get the most volatile information about the account
-GET /accounts/AD20-8675309/fresh
+GET /accounts/AD20-8675309/basic
 < 200
 < Content-Type: application/json
 {
 	"balance": 1420,
-	"status": "OK",
+	"status": 0,
 	"xferTotal": 237060719903,
 	"xferRate": 16242304,
 	"charged": 1344180247,
@@ -848,19 +930,21 @@ Create a new site
 POST /sites
 > Content-Type: application/json
 {
-	"sname": "sample",
+	"sname": "samplesite4",
+	"account": "AD20-8675309",
 	"auth": "0102030405060708"
 }
 < 201
-< Content-Location: http://api.nearlyfreespeech.net/v2/sites/sample
+< Content-Location: http://api.nearlyfreespeech.net/v2/sites/samplesite4
 < Content-Type: application/json
 {
-	"name": "sample",
-	"username": "sample_sample",
-	"cname": "sample.nfshost.com",
-	"ctype": "hard",
+	"name": "samplesite4",
+	"username": "sample_samplesite4",
+	"adjunct": false,
+	"cname": "samplesite4.nfshost.com",
+	"ctype": 0,
 	"type": 5,
-	"root": "/f2/sample/",
+	"root": "/f3/samplesite4/",
 	"realm": 2,
 	"enabled": true,
 	"control": "Allow All",
@@ -884,22 +968,23 @@ POST /sites
 	"rbackup": 0,
 	"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
 	"adjuncts": [],
-	"aliases": ["sample.nfshost.com"]
+	"aliases": ["samplesite4.nfshost.com"]
 	}
 }
 
-Get all sites owned by this member
+Get the list of sites attached to a membership
 GET /sites
 < 200
 < Content-Type: application/json
 {
-	"sample": {
-		"name": "sample",
-		"username": "sample_sample",
-		"cname": "sample.nfshost.com",
+	"samplesite": {
+		"sname": "samplesite",
+		"username": "sample_samplesite",
+		"adjunct": false,
+		"cname": "www.sample.com",
 		"ctype": 2,
-		"type": 3,
-		"root": "/f2/sample/",
+		"type": 5,
+		"root": "/f2/samplesite/",
 		"realm": 2,
 		"enabled": true,
 		"control": "Allow All",
@@ -923,15 +1008,16 @@ GET /sites
 		"rbackup": 1344197191,
 		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
 		"adjuncts": ["member1","member2"],
-		"aliases": ["www.sample.com","sample.nfshost.com"]
+		"aliases": ["www.sample.com","samplesite.nfshost.com"]
 		},
-	"sample2": {
-		"name": "sample2",
-		"username": "sample_sample2",
-		"cname": "sample2.nfshost.com",
+	"samplesite2": {
+		"sname": "samplesite2",
+		"username": "sample_samplesite2",
+		"adjunct": false,
+		"cname": "www.examp.le",
 		"ctype": 1,
-		"type": 3,
-		"root": "/f5/sample2/",
+		"type": 5,
+		"root": "/f5/samplesite2/",
 		"realm": 2,
 		"enabled": true,
 		"control": "Allow All",
@@ -955,15 +1041,16 @@ GET /sites
 		"rbackup": 0,
 		"addresses": ["13.14.15.16","17.18.19.20","21.22.23.24"],
 		"adjuncts": [],
-		"aliases": ["www.examp.le","sample2.nfshost.com"]
+		"aliases": ["www.examp.le","samplesite2.nfshost.com"]
 		},
-	"sample3": {
-		"name": "sample3",
-		"username": "sample_sample3",
-		"cname": "sample3.nfshost.com",
+	"samplesite3": {
+		"sname": "samplesite3",
+		"username": "sample_samplesite3",
+		"adjunct": false,
+		"cname": "samplesite3.nfshost.com",
 		"ctype": 0,
-		"type": 3,
-		"root": "/f1/sample3/",
+		"type": 5,
+		"root": "/f1/samplesite3/",
 		"realm": 2,
 		"enabled": false,
 		"control": "Allow All",
@@ -986,22 +1073,23 @@ GET /sites
 		"lbackup": 1344197191,
 		"rbackup": 0,
 		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
-		"adjuncts": ["member1","member2"],
-		"aliases": ["sample3.nfshost.com"]
+		"adjuncts": ["member1","member3"],
+		"aliases": ["samplesite3.nfshost.com"]
 		}
 }
 
 Get all information regarding a site
-GET /sites/sample
+GET /sites/samplesite
 < 200
 < Content-Type: application/json
 {
-	"name": "sample",
-	"username": "sample_sample",
-	"cname": "sample.nfshost.com",
-	"ctype": "hard",
-	"type": 3,
-	"root": "/f2/sample/",
+	"sname": "samplesite",
+	"username": "sample_samplesite",
+	"adjunct": false,
+	"cname": "www.sample.com",
+	"ctype": 2,
+	"type": 5,
+	"root": "/f2/samplesite/",
 	"realm": 2,
 	"enabled": true,
 	"control": "Allow All",
@@ -1025,11 +1113,11 @@ GET /sites/sample
 	"rbackup": 1344197191,
 	"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
 	"adjuncts": ["member1","member2"],
-	"aliases": ["www.sample.com","sample.nfshost.com"]
+	"aliases": ["www.sample.com","samplesite.nfshost.com"]
 }
 
 Return the most volatile information regarding a site
-GET /sites/sample/fresh
+GET /sites/samplesite/basic
 < 200
 < Content-Type: application/json
 {
@@ -1044,48 +1132,55 @@ GET /sites/sample/fresh
 }
 
 Return storage activity for the desired report period
+<<<<<<< HEAD
 GET /sites/sample/storage/0
+=======
+GET /sites/samplesite/storage/0
+>>>>>>> Added support info to member objects
 < 200
 < Content-Type: application/json
 {
-	"graph": "http://sample.com/path/to/image.jpg",
-	"chart":{
-		"1343087999": [78418944,78418944,78418944],
-		"1343174399": [78418944,78418944,78418944],
-		"1343260799": [78418944,78418944,78418944],
-		"1343347199": [78418944,78418944,78418944],
-		"1343433599": [78418944,78418944,78418944],
-		"1343519999": [78418944,78418944,78418944],
-		"1343606399": [78418944,78418944,78418944]
-		}
+	"image": "http://api.nearlyfreespeech.net/v2/pictures/picture.png",
+	"activity": [
+		{"time": 1343087999, "start": 78418944, "end": 78418944, "avg": 78418944},
+		{"time": 1343174399, "start": 78418944, "end": 78418944, "avg": 78418944},
+		{"time": 1343260799, "start": 78418944, "end": 78418944, "avg": 78418944},
+		{"time": 1343347199, "start": 78418944, "end": 78418944, "avg": 78418944},
+		{"time": 1343433599, "start": 78418944, "end": 78418944, "avg": 78418944},
+		{"time": 1343519999, "start": 78418944, "end": 78418944, "avg": 78418944},
+		{"time": 1343606399, "start": 78418944, "end": 78418944, "avg": 78418944}
+		]
 }
 
 Return bandwidth activity for the desired report period
+<<<<<<< HEAD
 GET /sites/sample/bandwidth/0
+=======
+GET /sites/samplesite/bandwidth/0
+>>>>>>> Added support info to member objects
 < 200
 < Content-Type: application/json
 {
-	"graph": "http://sample.com/path/to/image.jpg",
-	"chart":{
-		"1343606399": 306181,
-		"1343692799": 243273,
-		"1343779199": 566781,
-		"1343865599": 123337,
-		"1343951999": 462056,
-		"1344038399": 181972,
-		"1344124799": 114030,
-		"1344211199": 887285,
-		"total": 2884915
-		}
+	"image": "http://api.nearlyfreespeech.net/v2/pictures/picture.png",
+	"activity": [
+		{"time": 1343606399, "amount": 306181},
+		{"time": 1343692799, "amount": 243273},
+		{"time": 1343779199, "amount": 566781},
+		{"time": 1343865599, "amount": 123337},
+		{"time": 1343951999, "amount": 462056},
+		{"time": 1344038399, "amount": 181972},
+		{"time": 1344124799, "amount": 114030},
+		{"time": 1344211199, "amount": 887285}
+		]
 }
 
 Update the canonical name and type, aliases, adjuncts, logging options, type, realm or status for a site
-PUT /sites/sample
+PUT /sites/samplesite
 > Content-Type: application/json
 {
 	"aliases": ["www.sample.com","sample.nfshost.com","www.example.net"],
 	"adjuncts": ["member1","member2","member3"],
-	"cname": "www.sample.com",
+	"cname": "samplesite.nfshost.com",
 	"ctype": "off",
 	"alog": false,
 	"elog": true,
@@ -1100,7 +1195,7 @@ PUT /sites/sample
 
 
 Remove a site
-DELETE /sites/sample
+DELETE /sites/samplesite
 < 205
 
 
@@ -1112,19 +1207,20 @@ Register a new domain
 POST /domains
 > Content-Type: application/json
 {
-	"domain": "sample",
-	"tld": 0,
+	"name": "sample",
+	"tld": 1,
 	"account": "0541-CA1CBADD",
 	"term": 2,
 	"dns": true,
 	"privacy": 0,
+	"renewal": 0,
 	"auth": "0102030405060708"
 }
 < 201
-< Content-Location: https://api.nearlyfreespeech.net/v2/domains/sample.com
+< Content-Location: https://api.nearlyfreespeech.net/v2/domains/sample.net
 < Content-Type: application/json
 {
-	"name": "sample.com"
+	"name": "sample.net"
 	"account": "0541-CA1CBADD",
 	"expiration": 1656892800,
 	"deletion": 1656892800,
@@ -1170,7 +1266,7 @@ POST /domains/transfers
 > Content-Type: application/json
 {
 	"domain": "sample",
-	"tld": 1,
+	"tld": 2,
 	"account": "AD20-8675309",
 	"auth": "0102030405060708",
 	"privacy": 1
@@ -1245,12 +1341,13 @@ GET /domains
 < Content-Type: application/json
 {
 	"sample.com": {
+		"name": "sample.com",
 		"account": "AD20-8675309",
 		"expiration": 1656892800,
 		"deletion": 1656892800,
 		"renewal": 0,
 		"status": 1,
-		"lock": false,
+		"lock": true,
 		"dns": true,
 		"forwards": {"enabled": false},
 		"privacy": {"enabled": false},
@@ -1285,65 +1382,80 @@ GET /domains
 			}
 		},
 	"samp.le": {
+		"name": "samp.le",
 		"account": "0541-CA1CBADD",
 		"expiration": 1976230924,
 		"deletion": 1976230924,
 		"renewal": 0,
 		"status": 1,
-		"lock": false,
+		"lock": true,
 		"dns": false,
+		"forwards": {
+			"enabled": true,
+			"sample": "sample@sample.com",
+			"iam": "personal@sample.com"
+			},
 		"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
-		"forwards": {"enabled": false},
 		"privacy": {
 			"enabled": true,
+			"expiry": 1976230924
 			"prepaid": false
 			},
 		"registrant": {
-			"company": "",
-			"name": "Sample User",
-			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-			"phone": "2027737433",
-			"fax": ""
+			"company": "sample.com Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
 			},
 		"adminContact": {
-			"company": "",
-			"name": "Sample User",
-			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-			"phone": "2027737433",
-			"fax": ""
+			"company": "sample.com Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061",
 			},
 		"techContact": {
-			"company": "",
-			"name": "Sample User",
-			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-			"phone": "2027737433",
-			"fax": ""
+			"company": "sample.com Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
 			},
 		"billContact": {
-			"company": "",
-			"name": "Sample User",
-			"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-			"phone": "2027737433",
-			"fax": "",
+			"company": "sample.com Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
+			"phone": "1.8664570078",
+			"fax": "1.8663909061"
 			}
 		}
 }
 
 Get all information regarding a specific domain
-GET /domains/sample.com
+GET /domains/samp.le
 < 200
 < Content-Type: application/json
 {
-	"account": "AD20-8675309",
-	"expiration": 1593820800,
-	"deletion": 1593820800,
-	"renewal": 1,
+	"name": "samp.le",
+	"account": "0541-CA1CBADD",
+	"expiration": 1976230924,
+	"deletion": 1976230924,
+	"renewal": 0,
 	"status": 1,
-	"lock": true,
-	"dns": true,
-	"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
-	"forwards": {"enabled": false},
-	"privacy": {"enabled": false},
+	"lock": false,
+	"dns": false,
+	"forwards": {
+		"enabled": true,
+		"sample": "sample@sample.com",
+		"iam": "personal@sample.com"
+		},
+	"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
+	"privacy": {
+		"enabled": true,
+		"expiry": 1976230924
+		"prepaid": false
+		},
 	"registrant": {
 		"company": "sample.com Domain Administrator",
 		"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
@@ -1395,19 +1507,21 @@ PUT /domains/sample.com
 < 200
 < Content-Type: application/json
 {
-	"account": "0541-CA1CBADD",
-	"expiration": 1593820800,
-	"deletion": 1593820800,
-	"renewal": 1,
+	"name": "sample.com",
+	"account": "AD20-8675309",
+	"expiration": 1656892800,
+	"deletion": 1656892800,
+	"renewal": 0,
 	"status": 1,
-	"lock": false,
+	"lock": true,
 	"dns": true,
-	"nameservers": ["ns.phx3.nearlyfreespeech.net","ns.phx4.nearlyfreespeech.net"],
 	"forwards": {"enabled": false},
 	"privacy": {
 		"enabled": true,
 		"prepaid": true
+		"expiry": 1656892800
 		},
+	"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
 	"registrant": {
 		"company": "sample.com Domain Administrator",
 		"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
@@ -1555,20 +1669,21 @@ Create a new database process
 POST /db
 > Content-Type: application/json
 {
-	"name": "sample2",
+	"name": "sampledb2",
 	"account": "AD20-8675309",
 	"auth": "0102030405060708"
 }
 < 201
-< Content-Location: https://api.nearlyfreespeech.net/db/sample2
+< Content-Location: https://api.nearlyfreespeech.net/db/sampledb2
 < Content-Type: application/json
 {
-	"name": "sample2",
+	"name": "sampledb2",
 	"account": "AD20-8675309",
 	"autorestartable": true,
 	"runnable": true,
 	"running": true,
-	"node": "m8 (MySQL 5.0)",
+	"node": "m8",
+	"type": "MariaDB 5.3",
 	"size": 10240
 }
 
@@ -1577,31 +1692,34 @@ GET /db
 < 200
 < Content-Type: application/json
 {
-	"sample": {
+	"sampledb": {
 		"account": "AD20-8675309",
 		"autorestartable": true,
 		"runnable": true,
 		"running": true,
-		"node": "m8 (MySQL 5.0)",
+		"node": "m8",
+		"type": "MySQL 5.0",
 		"size": 3260416
 		}
 }
 
 Get all information regarding a database process
-GET /db/sample
+GET /db/sampledb
 < 200
 < Content-Type: application/json
 {
+	"name": "sampledb",
 	"account": "AD20-8675309",
 	"autorestartable": true,
 	"runnable": true,
 	"running": true,
-	"node": "m8 (MySQL 5.0)",
+	"node": "m8",
+	"type": "MySQL 5.0",
 	"size": 3260416
 }
 
 Create a new database
-POST /db/sample
+POST /db/sampledb
 > Content-Type: application/json
 {
 	"database": "example",
@@ -1640,7 +1758,9 @@ POST /support
 	"ticket": 123456,
 	"status": "Available",
 	"subject": "Restore from backup",
-	"1346529600": {"from": "Sample User", "body": "My blog got hacked yesterday and I need to restore it from my backups"}
+	"messages": [
+		{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"}
+		]
 }
 
 Find all open and recently-closed support requests
@@ -1649,18 +1769,22 @@ GET /support
 < Content-Type: application/json
 {
 	"open": [{
-			"ticket": 123456,
-			"status": "In Queue",
-			"subject": "Restore from backup",
-			"1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-			"1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
-			}],
+		"ticket": 123456,
+		"status": "In Queue",
+		"subject": "Restore from backup",
+		"messages": [
+			{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+			{"time": 1346537700, "from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+			]
+		}],
 	"closed": [{
 		"ticket": 112358,
 		"status": "Pending Auto-Close",
 		"subject": "Request an API key",
-		"1345115700": {"from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
-		"1345122900": {"from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
+		"messages": [
+			{"time": 1345115700, "from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
+			{"time": 1345122900, "from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
+			]
 		}]
 }
 
@@ -1672,8 +1796,10 @@ GET /support/123456
 	"ticket": 123456,
 	"status": "In Queue",
 	"subject": "Restore from backup",
-	"1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-	"1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+	"messages": [
+		{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+		{"time": 1346537700, "from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+		]
 }
 
 Respond to a support issue that has already been created
@@ -1686,11 +1812,13 @@ POST /support/123456
 < Content-Type: application/json
 {
 	"ticket": 123456,
-	"status": "In Queue",
+	"status": "Pending Auto-Close",
 	"subject": "Restore from backup",
-	"1346529600": {"from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-	"1346537700": {"from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."},
-	"1346541300": {"from": "Sample User", "message": "Thanks :)"}
+	"messages": [
+		{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+		{"time": 1346537700, "from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."},
+		{"time": 1346541300, "from": "Sample User", "message": "Thanks :)"}
+		]
 }
 
 --
@@ -1704,8 +1832,7 @@ This section relates to endpoints that are only used to document possible errors
 		"response": object
 	}
 
-The "error" key will contain a code to distinguish the error; the "message" key will contain a human-readable description of the error; 
-the "reference" key will contain a link back to relevant documentation and the "response" key will contain more specific errors in validation, if necessary.
+The "error" value will contain a code to distinguish the error; the "message" value will contain a human-readable description of the error; the "reference" value will contain a link back to relevant documentation and the "response" value will contain more specific errors in validation, if necessary.
 --
 
 Error obtained by trying to access an endpoint over HTTP
