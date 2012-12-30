@@ -229,7 +229,7 @@ GET /member
 		{"start": 1344189552, "duration": 3600, "address": "127.0.0.1", "agent": "Mozilla/5.0 AppleWebKit/535.19 Ubuntu/12.04 Chrome/18.0.1025.168"}
 		],
 	"keys": [
-		{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@sample.com)", "options": ""}
+		{"type": "RSA", "length": 4096, "fingerprint": "01:02:03:04:05:06:07:08:09:0A:0B:0C:0D:0E:0F:10", "comment": "Website Key (sample@sampledoma.in)", "options": ""}
 		],
 	"accounts": [
 		{"sname": "business",
@@ -308,14 +308,16 @@ GET /member
 	"sites": [
 		{"sname": "samplesite",
 		"username": "sample_samplesite",
+		"maintenance": false,
 		"adjunct": false,
 		"cname": "www.sample.com",
 		"ctype": 2,
 		"type": 5,
 		"root": "/f2/samplesite/",
+		"cluster": "coh-1-225",
 		"realm": 2,
 		"enabled": true,
-		"control": "Allow All",
+		"control": ["Allow All"],
 		"admin": "nobody",
 		"bank": 100,
 		"account": "AD20-8675309",
@@ -334,20 +336,29 @@ GET /member
 		"repSize": 78418944,
 		"lbackup": 1344197191,
 		"rbackup": 1344197191,
+		"totalRAU": 109.893,
+		"avgRAU": 12.206,
 		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+		"ipv6": false,
+		"bandwidth": 0,
 		"adjuncts": ["member1","member2"],
-		"aliases": ["www.sample.com","samplesite.nfshost.com"]
+		"aliases": ["www.sample.com","samplesite.nfshost.com"],
+		"tasks": [
+			{"tag": "permissions", "command": "chmod -R ug+rwx /home/public/blog", "user": 1, "hour": 7, "day": -1, "date": -1}
+			]
 		},
 		{"sname": "samplesite2",
 		"username": "sample_samplesite2",
+		"maintenance": false,
 		"adjunct": false,
 		"cname": "www.examp.le",
 		"ctype": 1,
 		"type": 5,
 		"root": "/f5/samplesite2/",
+		"cluster": "coh-1-226",
 		"realm": 2,
 		"enabled": true,
-		"control": "Allow All",
+		"control": ["Allow All"],
 		"admin": "nobody",
 		"bank": 52,
 		"account": "0541-CA1CBADD",
@@ -366,20 +377,27 @@ GET /member
 		"repSize": 134850810,
 		"lbackup": 1344197191,
 		"rbackup": 0,
+		"totalRAU": 17.747,
+		"avgRAU": 3.095,
 		"addresses": ["13.14.15.16","17.18.19.20","21.22.23.24"],
+		"ipv6": false,
+		"bandwidth": 0,
 		"adjuncts": [],
-		"aliases": ["www.examp.le","samplesite2.nfshost.com"]
+		"aliases": ["www.examp.le","samplesite2.nfshost.com"],
+		"tasks": []
 		},
 		{"sname": "samplesite3",
 		"username": "sample_samplesite3",
+		"maintenance": false,
 		"adjunct": false,
 		"cname": "samplesite3.nfshost.com",
 		"ctype": 0,
 		"type": 5,
 		"root": "/f1/samplesite3/",
+		"cluster": "coh-1-227",
 		"realm": 2,
 		"enabled": false,
-		"control": "Allow All",
+		"control": ["Allow All"],
 		"admin": "nobody",
 		"bank": 96,
 		"account": "0541-CA1CBADD",
@@ -398,9 +416,17 @@ GET /member
 		"repSize": 78418944,
 		"lbackup": 1344197191,
 		"rbackup": 0,
-		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+		"totalRAU": 202.112,
+		"avgRAU": 18.586,
+		"addresses": ["25.26.27.28","29.30.31.32","33.34.35.36","2e80::ff09:1123"],
+		"ipv6": true,
+		"bandwidth": 0,
 		"adjuncts": ["member1","member3"],
-		"aliases": ["samplesite3.nfshost.com"]
+		"aliases": ["samplesite3.nfshost.com"],
+		"tasks": [
+			{"tag": "logstuff", "command": "/home/private/dologstuff", "hour": 3, "day": -1, "date": 31},
+			{"tag": "optimizedb", "command": "/home/public/scripts/optimizedb", "hour": 1, "day": 5, "date": 13}
+			]
 		},
 		{"sname": "sampleadjunct",
 		"username": "sample_sampleadjunct",
@@ -526,8 +552,7 @@ GET /member
 		"node": "m8",
 		"type": "MySQL 5.0",
 		"size": 3260416
-		}
-	],
+		}],
 	"openSupport": [{
 		"ticket": 123456,
 		"status": "In Queue",
@@ -556,7 +581,7 @@ GET /member/basic
 	"login": "sample",
 	"name": "Sample User",
 	"email": "sample@sample.com",
-	"status": 0,
+	"status": "OK",
 	"supportPoints": 10,
 	"globalSSH": true,
 	"globalFTP": false,
@@ -654,8 +679,7 @@ POST /accounts/transfers
 {
 	"from": "AD20-8675309",
 	"to": "0541-CA1CBADD",
-	"amount": 1000,
-	"auth": "0102030405060708"
+	"amount": 1000
 }
 < 205
 
@@ -670,9 +694,7 @@ POST /accounts/deposits
 	"cardInfo": {
 		"cardnumber": "4747256077959177",
 		"cvv": "302",
-		"expiry": "1220"
-		},
-	"userInfo":  {
+		"expiry": "1220",
 		"name": "Sample User",
 		"address": "1600 Pennsylvania Ave",
 		"city": "Washington, D.C.",
@@ -684,10 +706,10 @@ POST /accounts/deposits
 < 200
 < Content-Type: application/json
 {
-	"gDeposit": 1500,
+	"grossDeposit": 1500,
 	"fee": 150,
 	"rebate": 65,
-	"nDeposit": 1415,
+	"netDeposit": 1415,
 	"balance": 2134
 }
 
@@ -723,7 +745,7 @@ GET /accounts
 		"activity": {
 			"current": [
 				{"name": "samplesite Site Charge", "charge": 1, "note": ""},
-				{"name": "sample.db MySQL Charge", "charge": 2, "note": ""},
+				{"name": "sampledb MySQL Charge", "charge": 2, "note": ""},
 				{"name": "Storage Charge", "charge": 30, "note": ""}
 				],
 			"recurring": [
@@ -767,7 +789,6 @@ GET /accounts
 			"recurring": [
 				{"name": "Dynamic Sites", "charge": 2, "note": "2 sites"},
 				{"name": "DNS", "charge": 0.111, "note": "1 zone, 1 registered & hosted"},
-				{"name": "MySQL", "charge": 2, "note": "1 process"},
 				{"name": "RespectMyPrivacy", "charge": 0, "note": "1 private domain, 1 prepaid"}
 				]
 			}
@@ -775,14 +796,6 @@ GET /accounts
 }
 
 Get a storage summary regarding all sites attached to a specific account
-<<<<<<< HEAD
-GET /accounts/AD20-8675309/storage
-< 200
-< Content-Type: application/json
-{
-	"sample": 78418944,
-	"total": 78418944
-=======
 GET /accounts/0541-CA1CBADD/storage
 < 200
 < Content-Type: application/json
@@ -790,7 +803,6 @@ GET /accounts/0541-CA1CBADD/storage
 	"samplesite2": 134850810,
 	"samplesite3": 78418944,
 	"total": 213269754
->>>>>>> Added support info to member objects
 }
 
 Get a bandwidth summary regarding all sites attached to a specific account
@@ -798,50 +810,39 @@ GET /accounts/AD20-8675309/bandwidth/5
 < 200
 < Content-Type: application/json
 {
-<<<<<<< HEAD
-	"image": ,
-	"1342396799": {
-					"sample": 6467166,
-					"total": 6467166
-					},
-	"1343001599": {
-					"sample": 6333859,
-=======
 	"image": "http://api.nearlyfreespeech.net/v2/pictures/picture.png",
 	"1342396799": {
-					"samplesite": 6467166,
-					"total": 6467166
-					},
+			"samplesite": 6467166,
+			"total": 6467166
+			},
 	"1343001599": {
-					"samplesite": 6333859,
->>>>>>> Added support info to member objects
-					"total": 6333859
-
-					},
+			"samplesite": 6333859,
+			"total": 6333859
+			},
+	"1342396799": {
+			"samplesite": 6467166,
+			"total": 6467166
+			},
+	"1343001599": {
+			"samplesite": 6333859,
+			"total": 6333859
+			},
 	"1343606399": {
-<<<<<<< HEAD
-					"sample": 4095185,
-					"total": 4095185
-					},
+			"samplesite": 4095185,
+			"total": 4095185
+			},
 	"1344211199": {
-					"sample": 1858923,
-=======
-					"samplesite": 4095185,
-					"total": 4095185
-					},
+			"samplesite": 4095185,
+			"total": 4095185
+			},
 	"1344211199": {
-					"samplesite": 1858923,
->>>>>>> Added support info to member objects
-					"total": 1858923
-					},
+			"samplesite": 1858923,
+			"total": 1858923
+			},
 	"total": 18755133
 }
 
-<<<<<<< HEAD
-Get all information regarding the specified account
-=======
 Get all information regarding a specified account
->>>>>>> Added support info to member objects
 GET /accounts/AD20-8675309
 < 200
 < Content-Type: application/json
@@ -890,7 +891,7 @@ GET /accounts/AD20-8675309/basic
 < Content-Type: application/json
 {
 	"balance": 1420,
-	"status": 0,
+	"status": "OK",
 	"xferTotal": 237060719903,
 	"xferRate": 16242304,
 	"charged": 1344180247,
@@ -938,16 +939,18 @@ POST /sites
 < Content-Location: http://api.nearlyfreespeech.net/v2/sites/samplesite4
 < Content-Type: application/json
 {
-	"name": "samplesite4",
+	"sname": "samplesite4",
 	"username": "sample_samplesite4",
+	"maintenance": false,
 	"adjunct": false,
-	"cname": "samplesite4.nfshost.com",
+	"cname": "samplesite.nfshost.com",
 	"ctype": 0,
 	"type": 5,
 	"root": "/f3/samplesite4/",
+	"cluster": "coh-1-228",
 	"realm": 2,
 	"enabled": true,
-	"control": "Allow All",
+	"control": ["Allow All"],
 	"admin": "nobody",
 	"bank": 100,
 	"account": "AD20-8675309",
@@ -966,10 +969,14 @@ POST /sites
 	"repSize": 0,
 	"lbackup": 1139040612,
 	"rbackup": 0,
-	"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+	"totalRAU": 0,
+	"avgRAU": 0,
+	"addresses": ["37.38.39.40","41.42.43.44","45.46.47.48"],
+	"ipv6": false,
+	"bandwidth": 0,
 	"adjuncts": [],
-	"aliases": ["samplesite4.nfshost.com"]
-	}
+	"aliases": ["samplesite4.nfshost.com"],
+	"tasks": []
 }
 
 Get the list of sites attached to a membership
@@ -980,14 +987,16 @@ GET /sites
 	"samplesite": {
 		"sname": "samplesite",
 		"username": "sample_samplesite",
+		"maintenance": false,
 		"adjunct": false,
 		"cname": "www.sample.com",
 		"ctype": 2,
 		"type": 5,
 		"root": "/f2/samplesite/",
+		"cluster": "coh-1-225",
 		"realm": 2,
 		"enabled": true,
-		"control": "Allow All",
+		"control": ["Allow All"],
 		"admin": "nobody",
 		"bank": 100,
 		"account": "AD20-8675309",
@@ -1006,21 +1015,30 @@ GET /sites
 		"repSize": 78418944,
 		"lbackup": 1344197191,
 		"rbackup": 1344197191,
+		"totalRAU": 109.893,
+		"avgRAU": 12.206,
 		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+		"ipv6": false,
+		"bandwidth": 0,
 		"adjuncts": ["member1","member2"],
-		"aliases": ["www.sample.com","samplesite.nfshost.com"]
+		"aliases": ["www.sample.com","samplesite.nfshost.com"],
+		"tasks": [
+			{"tag": "permissions", "command": "chmod -R ug+rwx /home/public/blog", "user": 1, "hour": 7, "day": -1, "date": -1}
+			]
 		},
 	"samplesite2": {
 		"sname": "samplesite2",
 		"username": "sample_samplesite2",
+		"maintenance": false,
 		"adjunct": false,
 		"cname": "www.examp.le",
 		"ctype": 1,
 		"type": 5,
 		"root": "/f5/samplesite2/",
+		"cluster": "coh-1-226",
 		"realm": 2,
 		"enabled": true,
-		"control": "Allow All",
+		"control": ["Allow All"],
 		"admin": "nobody",
 		"bank": 52,
 		"account": "0541-CA1CBADD",
@@ -1039,21 +1057,28 @@ GET /sites
 		"repSize": 134850810,
 		"lbackup": 1344197191,
 		"rbackup": 0,
+		"totalRAU": 17.747,
+		"avgRAU": 3.095,
 		"addresses": ["13.14.15.16","17.18.19.20","21.22.23.24"],
+		"ipv6": false,
+		"bandwidth": 0,
 		"adjuncts": [],
-		"aliases": ["www.examp.le","samplesite2.nfshost.com"]
+		"aliases": ["www.examp.le","samplesite2.nfshost.com"],
+		"tasks": []
 		},
 	"samplesite3": {
 		"sname": "samplesite3",
 		"username": "sample_samplesite3",
+		"maintenance": false,
 		"adjunct": false,
 		"cname": "samplesite3.nfshost.com",
 		"ctype": 0,
 		"type": 5,
 		"root": "/f1/samplesite3/",
+		"cluster": "coh-1-227",
 		"realm": 2,
 		"enabled": false,
-		"control": "Allow All",
+		"control": ["Allow All"],
 		"admin": "nobody",
 		"bank": 96,
 		"account": "0541-CA1CBADD",
@@ -1072,9 +1097,17 @@ GET /sites
 		"repSize": 78418944,
 		"lbackup": 1344197191,
 		"rbackup": 0,
-		"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+		"totalRAU": 202.112,
+		"avgRAU": 18.586,
+		"addresses": ["25.26.27.28","29.30.31.32","33.34.35.36","2e80::ff09:1123"],
+		"ipv6": true,
+		"bandwidth": 0,
 		"adjuncts": ["member1","member3"],
-		"aliases": ["samplesite3.nfshost.com"]
+		"aliases": ["samplesite3.nfshost.com"],
+		"tasks": [
+			{"tag": "logstuff", "command": "/home/private/dologstuff", "hour": 3, "day": -1, "date": 31},
+			{"tag": "optimizedb", "command": "/home/public/scripts/optimizedb", "hour": 1, "day": 5, "date": 13}
+			]
 		}
 }
 
@@ -1085,14 +1118,16 @@ GET /sites/samplesite
 {
 	"sname": "samplesite",
 	"username": "sample_samplesite",
+	"maintenance": false,
 	"adjunct": false,
 	"cname": "www.sample.com",
 	"ctype": 2,
 	"type": 5,
 	"root": "/f2/samplesite/",
+	"cluster": "coh-1-225",
 	"realm": 2,
 	"enabled": true,
-	"control": "Allow All",
+	"control": ["Allow All"],
 	"admin": "nobody",
 	"bank": 100,
 	"account": "AD20-8675309",
@@ -1111,9 +1146,16 @@ GET /sites/samplesite
 	"repSize": 78418944,
 	"lbackup": 1344197191,
 	"rbackup": 1344197191,
+	"totalRAU": 109.893,
+	"avgRAU": 12.206,
 	"addresses": ["1.2.3.4","5.6.7.8","9.10.11.12"],
+	"ipv6": false,
+	"bandwidth": 0,
 	"adjuncts": ["member1","member2"],
-	"aliases": ["www.sample.com","samplesite.nfshost.com"]
+	"aliases": ["www.sample.com","samplesite.nfshost.com"],
+	"tasks": [
+		{"tag": "permissions", "command": "chmod -R ug+rwx /home/public/blog", "user": 1, "hour": 7, "day": -1, "date": -1}
+		]
 }
 
 Return the most volatile information regarding a site
@@ -1132,11 +1174,7 @@ GET /sites/samplesite/basic
 }
 
 Return storage activity for the desired report period
-<<<<<<< HEAD
-GET /sites/sample/storage/0
-=======
 GET /sites/samplesite/storage/0
->>>>>>> Added support info to member objects
 < 200
 < Content-Type: application/json
 {
@@ -1153,11 +1191,7 @@ GET /sites/samplesite/storage/0
 }
 
 Return bandwidth activity for the desired report period
-<<<<<<< HEAD
-GET /sites/sample/bandwidth/0
-=======
 GET /sites/samplesite/bandwidth/0
->>>>>>> Added support info to member objects
 < 200
 < Content-Type: application/json
 {
@@ -1174,14 +1208,12 @@ GET /sites/samplesite/bandwidth/0
 		]
 }
 
-Update the canonical name and type, aliases, adjuncts, logging options, type, realm or status for a site
+Update the canonical name and type, logging options, type, realm or status for a site
 PUT /sites/samplesite
 > Content-Type: application/json
 {
-	"aliases": ["www.sample.com","sample.nfshost.com","www.example.net"],
-	"adjuncts": ["member1","member2","member3"],
 	"cname": "samplesite.nfshost.com",
-	"ctype": "off",
+	"ctype": 0,
 	"alog": false,
 	"elog": true,
 	"rlog": 2,
@@ -1192,6 +1224,32 @@ PUT /sites/samplesite
 	"enabled": false
 }
 < 205
+
+
+Add alias for a site
+POST /sites/samplesite/aliases
+> Content-Type: application/json
+{
+	"alias": "www.example.net"
+}
+< 205
+
+
+Add adjunct member for a site
+POST /sites/samplesite/adjuncts
+> Content-Type: application/json
+{
+	"adjunct": "member3"
+}
+
+Remove alias for a site
+DELETE /sites/samplesite/aliases/www.example.net
+< 205
+
+
+Remove adjunct member for a site
+DELETE /sites/samplesite/adjuncts/member3
+<205
 
 
 Remove a site
@@ -1213,8 +1271,7 @@ POST /domains
 	"term": 2,
 	"dns": true,
 	"privacy": 0,
-	"renewal": 0,
-	"auth": "0102030405060708"
+	"renewal": 0
 }
 < 201
 < Content-Location: https://api.nearlyfreespeech.net/v2/domains/sample.net
@@ -1268,7 +1325,6 @@ POST /domains/transfers
 	"domain": "sample",
 	"tld": 2,
 	"account": "AD20-8675309",
-	"auth": "0102030405060708",
 	"privacy": 1
 }
 < 202
@@ -1285,8 +1341,7 @@ POST /domains/renewals
 	"tld": 0,
 	"term": 2,
 	"account": "AD20-8675309",
-	"privacy": 2,
-	"auth": "0102030405060708"
+	"privacy": 2
 }
 < 200
 < Content-Type: application/json
@@ -1501,8 +1556,7 @@ PUT /domains/sample.com
 	"lock": false,
 	"privacy": 2,
 	"nameservers": ["ns.phx3.nearlyfreespeech.net","ns.phx4.nearlyfreespeech.net"],
-	"account": "0541-CA1CBADD",
-	"auth": "0102030405060708"
+	"account": "0541-CA1CBADD"
 }
 < 200
 < Content-Type: application/json
@@ -1563,13 +1617,12 @@ POST /dns
 	"domain": "examp.le",
 	"account": "0541-CA1CBADD",
 	"records": [
-				{"name": "www", "type": "CNAME", "data": "sample2.nfshost.com"},
-				{"name": "proxy", "type": "A", "data": "1.2.4.8"},
-				{"name": "server", "type": "AAAA", "data": "2000:3000:4000::5678"},
-				{"name": "www2", "type": "NS", "data": "16.32.64.128"},
-				{"name": "", "type": "TXT", "data": "Oh how did I get here I am not good with computer"}
-			],
-	"auth": "0102030405060708"
+		{"name": "www", "type": "CNAME", "data": "sample2.nfshost.com"},
+		{"name": "proxy", "type": "A", "data": "1.2.4.8"},
+		{"name": "server", "type": "AAAA", "data": "2000:3000:4000::5678"},
+		{"name": "www2", "type": "NS", "data": "16.32.64.128"},
+		{"name": "", "type": "TXT", "data": "Oh how did I get here I am not good with computer"}
+		]
 }
 < 201
 < Content-Location: https://api.nearlyfreespeech.net/dns/examp.le
@@ -1633,8 +1686,7 @@ PUT /dns/sample.com
 {
 	"enabled": false,
 	"spf": true,
-	"bareDomain": true,
-	"auth": "0102030405060708"
+	"bareDomain": true
 }
 < 205
 
@@ -1670,8 +1722,7 @@ POST /db
 > Content-Type: application/json
 {
 	"name": "sampledb2",
-	"account": "AD20-8675309",
-	"auth": "0102030405060708"
+	"account": "AD20-8675309"
 }
 < 201
 < Content-Location: https://api.nearlyfreespeech.net/db/sampledb2
