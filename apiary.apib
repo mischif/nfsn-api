@@ -3,14 +3,14 @@ HOST: https://api.nearlyfreespeech.net/v2
 --- NFS.net API V2 ---
 ---
 This is a reference implementation and corresponding documentation for a candidate of the next version of the NearlyFreeSpeech.net API.
-For the sake of simplicity, this reference will operate on a sample member.
+For the sake of simplicity, this implementation will operate on a sample member.
 
 All clients must accept and produce UTF-8 encoded JSON as specified in [RFC 4627](http://tools.ietf.org/html/rfc4627).
 All clients must operate over TLS at all times.
 All request body names must be in lowercase.
 Monetary values are to be expressed in cents with the exceptions of current and recurring charges, which are to be expressed in millicents.
-Resourcs Access Units will be expressed in milliRAUs
-Data values are to be expressed in bytes.
+Resource Access Units will be expressed in milliRAUs.
+Data transfer values are to be expressed in bytes.
 Time values are to be expressed in epoch seconds.
 
 Member-Related and Site-Related option values:
@@ -156,27 +156,32 @@ Domain-Related option values:
 <td>TLD</td>
 <td>Registration Action</td>
 <td>Renewal Action</td>
+<td>RespectMyPrivacy Setting</td>
 </tr>
 <tr>
 <td>0</td>
 <td>.com</td>
 <td>Register</td>
 <td>None</td>
-</tr>
+<<td>disabled</td>
+/tr>
 <tr>
 <td>1</td>
 <td>.org</td>
 <td>Transfer</td>
 <td>Manual</td>
+<td>Enabled, pay-per-day</td>
 </tr>
 <tr>
 <td>2</td>
 <td>.net</td>
 <td>Renew</td>
 <td>Automatic</td>
+<td>Enabled, prepaid</td>
 </tr>
 <td>3</td>
 <td>.info</td>
+<td>N/A</td>
 <td>N/A</td>
 <td>N/A</td>
 </tr>
@@ -184,9 +189,11 @@ Domain-Related option values:
 <td>.name</td>
 <td>N/A</td>
 <td>N/A</td>
+<td>N/A</td>
 </tr>
 <td>5</td>
 <td>.biz</td>
+<td>N/A</td>
 <td>N/A</td>
 <td>N/A</td>
 </tr>
@@ -197,6 +204,7 @@ Domain-Related option values:
 Member Endpoints
 This section relates to all endpoints in regard to the member profile
 --
+
 Initiate registration for a new member
 POST /member
 > Content-Type: application/json
@@ -252,7 +260,7 @@ GET /member
 				"address": "1600 Pennsylvania Ave",
 				"city": "Washington, D.C.",
 				"state": "",
-				"postal": 20204,
+				"postal": "20204",
 				"country": "US",
 				"phone": "2027737433",
 				"emergency": "sample@sample.com"
@@ -290,20 +298,20 @@ GET /member
 				"address": "1600 Pennsylvania Ave",
 				"city": "Washington, D.C.",
 				"state": "",
-				"postal": 20204,
+				"postal": "20204",
 				"country": "US",
 				"phone": "2027737433",
 				"emergency": "sample@samp.le"
 				},
 			"activity": {
 				"current": [
-					{"name": "samplesite2 Site Charge", "charge": 1000,"note": ""},
-					{"name": "samplesite3 Site Charge", "charge": 1000,"note": ""},
+					{"name": "samplesite2 Site Charge", "charge": 1000, "note": ""},
+					{"name": "samplesite3 Site Charge", "charge": 1000, "note": ""},
 					{"name": "Storage Charge", "charge": 30000, "note": ""}
 					],
 				"recurring": [
 					{"name": "Dynamic Sites", "charge": 2000, "note": "2 sites"},
-					{"name": "Email Forwarding", "charge": 3000, "note": "1 site"}
+					{"name": "Email Forwarding", "charge": 3000, "note": "1 site"},
 					{"name": "RespectMyPrivacy", "charge": 1000, "note": "1 private domain, 0 prepaid"}
 					]
 				}
@@ -508,33 +516,32 @@ GET /member
 			"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
 			"privacy": {
 				"enabled": true,
-				"expiry": 1976230924,
 				"prepaid": false
 				},
 			"registrant": {
 				"company": "samp.le Domain Administrator",
-				"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+				"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 				"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 				"phone": "1.8664570078",
 				"fax": "1.8663909061"
 				},
 			"adminContact": {
 				"company": "samp.le Domain Administrator",
-				"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+				"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 				"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 				"phone": "1.8664570078",
 				"fax": "1.8663909061"
 				},
 			"techContact": {
 				"company": "samp.le Domain Administrator",
-				"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+				"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 				"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 				"phone": "1.8664570078",
 				"fax": "1.8663909061"
 				},
 			"billContact": {
 				"company": "samp.le Domain Administrator",
-				"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+				"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 				"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 				"phone": "1.8664570078",
 				"fax": "1.8663909061"
@@ -563,30 +570,35 @@ GET /member
 			"account": "AD20-8675309",
 			"autorestartable": true,
 			"runnable": true,
-			"running": true,
+			"enabled": true,
 			"node": "m8",
 			"type": "MySQL 5.0",
-			"size": 3260416
+			"size": 3260416,
+			"glog": true,
+			"slog": false,
+			"ulog": false
 			}
 		},
-	"openSupport": [{
-		"ticket": 123456,
-		"status": "In Queue",
-		"subject": "Restore from backup",
-		"messages": [
-			{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
-			{"time": 1346537700, "from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
-			]
-		}],
-	"closedSupport": [{
-		"ticket": 112358,
-		"status": "Pending Auto-Close",
-		"subject": "Request an API key",
-		"messages": [
-			{"time": 1345115700, "from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
-			{"time": 1345122900, "from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
-			]
-		}]
+	"support": {
+		"open": [{
+			"ticket": 123456,
+			"status": "In Queue",
+			"subject": "Restore from backup",
+			"messages": [
+				{"time": 1346529600, "from": "Sample User", "message": "My blog got hacked yesterday and I need to restore it from my backups"},
+				{"time": 1346537700, "from": "Tech Support", "message": "Your site has been restored with backups taken on 8/25."}
+				]
+			}],
+		"closed": [{
+			"ticket": 112358,
+			"status": "Pending Auto-Close",
+			"subject": "Request an API key",
+			"messages": [
+				{"time": 1345115700, "from": "Sample User", "message": "I am working on a NFS client and would like my API key"},
+				{"time": 1345122900, "from": "Tech Support", "message": "Here you go: BADDBEEFDEADD00D"}
+				]
+			}]
+		}
 }
 
 Get basic information about a membership and affiliated accounts, sites, domains and databases
@@ -607,8 +619,10 @@ GET /member/basic
 	"domains": ["sample.com","samp.le"],
 	"dns": ["sample.com"],
 	"databases": ["sampledb"],
-	"openSupport": [123456],
-	"closedSupport": [112358]
+	"support": {
+		"open": [123456],
+		"closed": [112358]
+		},
 	"sessions": [
 		{"start": 1344189552, "duration": 3600, "address": "127.0.0.1", "agent": "Mozilla/5.0 AppleWebKit/535.19 Ubuntu/12.04 Chrome/18.0.1025.168"}
 		],
@@ -650,7 +664,7 @@ POST /accounts
 	"fname": "Sample",
 	"lname": "User",
 	"oname": "",
-	"sname": "business",
+	"sname": "project",
 	"address": "1600 Pennsylvania Ave",
 	"city": "Washington, D.C.",
 	"state": "",
@@ -659,12 +673,11 @@ POST /accounts
 	"phone": "2027737433"
 }
 < 201
-< Content-Location: https://api.nearlyfreespeech.net/v2/accounts/AD20-8675309
+< Content-Location: https://api.nearlyfreespeech.net/v2/accounts/BADD-D00000D
 < Content-Type: application/json
 {
-	"name": "AD20-8675309",
-	"sname": "business",
-	"number": "AD20-8675309",
+	"sname": "project",
+	"number": "BADD-D00000D",
 	"status": "OK",
 	"xferTotal": 0,
 	"warnings": [500,100],
@@ -734,7 +747,7 @@ GET /accounts
 < 200
 < Content-Type: application/json
 {
-	"AD20-8675309": {
+	"business": {
 		"sname": "business",
 		"number": "AD20-8675309",
 		"status": "OK",
@@ -772,7 +785,7 @@ GET /accounts
 				]
 			}
 		},
-	"0541-CA1CBADD": {
+	"personal": {
 		"sname": "personal",
 		"number": "0541-CA1CBADD",
 		"status": "OK",
@@ -804,8 +817,8 @@ GET /accounts
 				],
 			"recurring": [
 				{"name": "Dynamic Sites", "charge": 2000, "note": "2 sites"},
-				{"name": "DNS", "charge": 111, "note": "1 zone, 1 registered & hosted"},
-				{"name": "RespectMyPrivacy", "charge": 0, "note": "1 private domain, 1 prepaid"}
+				{"name": "Email Forwarding", "charge": 3000, "note": "1 site"},
+				{"name": "RespectMyPrivacy", "charge": 1000, "note": "1 private domain, 0 prepaid"}
 				]
 			}
 		}
@@ -817,45 +830,31 @@ GET /accounts/0541-CA1CBADD/storage
 < Content-Type: application/json
 {
 	"samplesite2": 134850810,
-	"samplesite3": 78418944,
-	"total": 213269754
+	"samplesite3": 78418944
 }
 
 Get a bandwidth summary regarding all sites attached to a specific account
-GET /accounts/AD20-8675309/bandwidth/5
+GET /accounts/0541-CA1CBADD/bandwidth/5
 < 200
 < Content-Type: application/json
 {
 	"image": "http://api.nearlyfreespeech.net/v2/pictures/picture.png",
 	"1342396799": {
-			"samplesite": 6467166,
-			"total": 6467166
+			"samplesite2": 6467166,
+			"samplesite3": 4028193
 			},
 	"1343001599": {
-			"samplesite": 6333859,
-			"total": 6333859
-			},
-	"1342396799": {
-			"samplesite": 6467166,
-			"total": 6467166
-			},
-	"1343001599": {
-			"samplesite": 6333859,
-			"total": 6333859
+			"samplesite2": 6333859,
+			"samplesite3": 17242900
 			},
 	"1343606399": {
-			"samplesite": 4095185,
-			"total": 4095185
+			"samplesite2": 4095185,
+			"samplesite3": 3048966
 			},
 	"1344211199": {
-			"samplesite": 4095185,
-			"total": 4095185
-			},
-	"1344211199": {
-			"samplesite": 1858923,
-			"total": 1858923
-			},
-	"total": 18755133
+			"samplesite2": 1858923,
+			"samplesite3": 1123581321
+			}
 }
 
 Get all information regarding a specified account
@@ -876,7 +875,7 @@ GET /accounts/AD20-8675309
 	"charged": 1344180247,
 	"modified": 1344180247,
 	"contact": {
-		"oname": "",
+		"oname": "Sample Corp",
 		"name": "Sample User",
 		"address": "1600 Pennsylvania Ave",
 		"city": "Washington, D.C.",
@@ -889,7 +888,7 @@ GET /accounts/AD20-8675309
 	"activity": {
 		"current": [
 			{"name": "samplesite Site Charge", "charge": 1000, "note": ""},
-			{"name": "sample.db MySQL Charge", "charge": 2000, "note": ""},
+			{"name": "sampledb MySQL Charge", "charge": 2000, "note": ""},
 			{"name": "Storage Charge", "charge": 30000, "note": ""}
 			],
 		"recurring": [
@@ -1248,7 +1247,8 @@ POST /sites/samplesite/aliases
 {
 	"alias": "www.example.net"
 }
-< 205
+< 201
+< Content-Location: https://api.nearlyfreespeech.net/v2/sites/samplesite/aliases/www.example.net
 
 
 Add adjunct member for a site
@@ -1257,7 +1257,8 @@ POST /sites/samplesite/adjuncts
 {
 	"adjunct": "member3"
 }
-< 205
+< 201
+< Content-Location: https://api.nearlyfreespeech.net/v2/sites/samplesite/adjuncts/member3
 
 
 Remove alias for a site
@@ -1279,12 +1280,13 @@ DELETE /sites/samplesite
 Domain Endpoints
 This section relates to all endpoints in regard to a member's domains
 --
+
 Register a new domain
 POST /domains
 > Content-Type: application/json
 {
 	"name": "sample",
-	"tld": 1,
+	"tld": 2,
 	"account": "0541-CA1CBADD",
 	"term": 2,
 	"dns": true,
@@ -1305,7 +1307,7 @@ POST /domains
 	"dns": true,
 	"nameservers": ["ns1.phx.nearlyfreespeech.net","ns2.phx.nearlyfreespeech.net"],
 	"forwards": {"enabled": false},
-	"privacy": {"enabled": false},
+	"privacy": 0,
 	"registrant": {
 		"company": "",
 		"name": "Sample User",
@@ -1340,8 +1342,7 @@ Initiate a domain transfer into NearlyFreeSpeech.Net
 POST /domains/transfers
 > Content-Type: application/json
 {
-	"domain": "sample",
-	"tld": 2,
+	"domain": "sample.net",
 	"account": "AD20-8675309",
 	"privacy": 1
 }
@@ -1355,8 +1356,7 @@ Renew domain
 POST /domains/renewals
 > Content-Type: application/json
 {
-	"domain": "sample",
-	"tld": 0,
+	"domain": "sample.com",
 	"term": 2,
 	"account": "AD20-8675309",
 	"privacy": 2
@@ -1364,49 +1364,10 @@ POST /domains/renewals
 < 200
 < Content-Type: application/json
 {
-	"account": "AD20-8675309",
 	"expiration": 1720051200,
 	"deletion": 1720051200,
-	"renewal": 0,
-	"status": 1,
-	"lock": false,
-	"dns": true,
-	"forwards": {"enabled": false},
-	"privacy": {
-		"enabled": true,
-		"prepaid": true
-		},
-	"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
-	"registrant": {
-		"company": "",
-		"name": "Sample User",
-		"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-		"phone": "2027737433",
-		"fax": ""
-		},
-	"adminContact": {
-		"company": "",
-		"name": "Sample User",
-		"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-		"phone": "2027737433",
-		"fax": ""
-		},
-	"techContact": {
-		"company": "",
-		"name": "Sample User",
-		"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-		"phone": "2027737433",
-		"fax": ""
-		},
-	"billContact": {
-		"company": "",
-		"name": "Sample User",
-		"address": "1600 Pennsylvania Ave Washington, D.C. 20204 US",
-		"phone": "2027737433",
-		"fax": ""
-		}
+	"privacy": 2
 }
-
 
 Get a list of all domains under the member's control
 GET /domains
@@ -1423,7 +1384,7 @@ GET /domains
 		"lock": true,
 		"dns": true,
 		"forwards": {"enabled": false},
-		"privacy": {"enabled": false},
+		"privacy": 0,
 		"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
 		"registrant": {
 			"company": "",
@@ -1469,34 +1430,31 @@ GET /domains
 			"iam": "personal@sample.com"
 			},
 		"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
-		"privacy": {
-			"enabled": true,
-			"prepaid": false
-			},
+		"privacy": 2,
 		"registrant": {
-			"company": "sample.com Domain Administrator",
-			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 			"phone": "1.8664570078",
 			"fax": "1.8663909061"
 			},
 		"adminContact": {
-			"company": "sample.com Domain Administrator",
-			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 			"phone": "1.8664570078",
 			"fax": "1.8663909061",
 			},
 		"techContact": {
-			"company": "sample.com Domain Administrator",
-			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 			"phone": "1.8664570078",
 			"fax": "1.8663909061"
 			},
 		"billContact": {
-			"company": "sample.com Domain Administrator",
-			"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+			"company": "samp.le Domain Administrator",
+			"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 			"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 			"phone": "1.8664570078",
 			"fax": "1.8663909061"
@@ -1523,34 +1481,31 @@ GET /domains/samp.le
 		"iam": "personal@sample.com"
 		},
 	"nameservers": ["ns1.somednsho.st","ns2.somednsho.st"],
-	"privacy": {
-		"enabled": true,
-		"prepaid": false
-		},
+	"privacy": 2,
 	"registrant": {
-		"company": "sample.com Domain Administrator",
-		"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+		"company": "samp.le Domain Administrator",
+		"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 		"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 		"phone": "1.8664570078",
 		"fax": "1.8663909061"
 		},
 	"adminContact": {
-		"company": "sample.com Domain Administrator",
-		"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+		"company": "samp.le Domain Administrator",
+		"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 		"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 		"phone": "1.8664570078",
 		"fax": "1.8663909061",
 		},
 	"techContact": {
-		"company": "sample.com Domain Administrator",
-		"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+		"company": "samp.le Domain Administrator",
+		"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 		"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 		"phone": "1.8664570078",
 		"fax": "1.8663909061"
 		},
 	"billContact": {
-		"company": "sample.com Domain Administrator",
-		"name": "c/o RespectMyPrivacy, LLC (sample.com@RespectMyPrivacy.COM)",
+		"company": "samp.le Domain Administrator",
+		"name": "c/o RespectMyPrivacy, LLC (samp.le@RespectMyPrivacy.COM)",
 		"address": "PO BOX 484 COCOA, FL 32923-0484 US",
 		"phone": "1.8664570078",
 		"fax": "1.8663909061"
@@ -1562,34 +1517,31 @@ GET /domains/sample.com/xferCode
 < 200
 < Content-Type: application/json
 {
-	"code": 1337
+	"code": 1290
 }
 
-Modify status of domain lock, renewal type, nameservers, privacy or attached account
+Modify status of domain lock, renewal type, privacy or attached account
 PUT /domains/sample.com
 > Content-Type: application/json
 {
 	"lock": false,
-	"privacy": 2,
-	"nameservers": ["ns.phx3.nearlyfreespeech.net","ns.phx4.nearlyfreespeech.net"],
+	"renewal": 1,
+	"privacy": 1,
 	"account": "0541-CA1CBADD"
 }
 < 200
 < Content-Type: application/json
 {
 	"name": "sample.com",
-	"account": "AD20-8675309",
+	"account": "0541-CA1CBADD",
 	"expiration": 1656892800,
 	"deletion": 1656892800,
-	"renewal": 0,
+	"renewal": 1,
 	"status": 1,
-	"lock": true,
+	"lock": false,
 	"dns": true,
 	"forwards": {"enabled": false},
-	"privacy": {
-		"enabled": true,
-		"prepaid": true
-		},
+	"privacy": 1,
 	"nameservers": ["ns.phx1.nearlyfreespeech.net","ns.phx2.nearlyfreespeech.net"],
 	"registrant": {
 		"company": "sample.com Domain Administrator",
@@ -1621,11 +1573,27 @@ PUT /domains/sample.com
 		}
 }
 
+Add a nameserver for a domain
+POST /domains/sample.com/nameservers
+> Content-Type: application/json
+{
+	"nameserver": "ns.phx3.nearlyfreespeech.net"
+}
+< 201
+< Content-Location: https://api.nearlyfreespeech.net/v2/domains/sample.com/nameservers/ns.phx3.nearlyfreespeech.net
+
+
+Remove a nameserver for a domain
+DELETE /domains/sample.com/nameservers/ns.phx3.nearlyfreespeech.net
+< 205
+
+
 --
 DNS Endpoints
 This section relates to all endpoints in regard to a member's domain's DNS
 --
-Add NFS.N DNS for a domain
+
+Initialize NFS.N DNS for a domain
 POST /dns
 > Content-Type: application/json
 {
@@ -1729,7 +1697,7 @@ POST /dns/sample.com/records
 }
 
 Remove resource record for a domain
-DELETE /dns/sample.com/records/10002
+DELETE /dns/sample.com/records/10005
 < 205
 
 
@@ -1742,6 +1710,7 @@ DELETE /dns/sample.com
 Database Endpoints
 This section relates to all endpoints in regard to a member's databases
 --
+
 Create a new database process
 POST /db
 > Content-Type: application/json
@@ -1757,10 +1726,13 @@ POST /db
 	"account": "AD20-8675309",
 	"autorestartable": true,
 	"runnable": true,
-	"running": true,
+	"enabled": true,
 	"node": "m8",
 	"type": "MariaDB 5.3",
-	"size": 10240
+	"size": 10240,
+	"glog": false,
+	"slog": false,
+	"ulog": false
 }
 
 Get a list of all database processes owned by the member
@@ -1772,10 +1744,13 @@ GET /db
 		"account": "AD20-8675309",
 		"autorestartable": true,
 		"runnable": true,
-		"running": true,
+		"enabled": true,
 		"node": "m8",
 		"type": "MySQL 5.0",
-		"size": 3260416
+		"size": 3260416,
+		"glog": true,
+		"slog": false,
+		"ulog": false
 		}
 }
 
@@ -1788,10 +1763,38 @@ GET /db/sampledb
 	"account": "AD20-8675309",
 	"autorestartable": true,
 	"runnable": true,
-	"running": true,
+	"enabled": true,
 	"node": "m8",
 	"type": "MySQL 5.0",
-	"size": 3260416
+	"size": 3260416,
+	"glog": true,
+	"slog": false,
+	"ulog": false
+}
+
+Modify autorestartability, log status and enabled status of a database process
+PUT /db/sampledb
+> Content-Type: application/json
+{
+	"autorestartable": false,
+	"enabled": false,
+	"glog": false,
+	"slog": true
+}
+< 200
+< Content-Type: application/json
+{
+	"name": "sampledb",
+	"account": "AD20-8675309",
+	"autorestartable": false,
+	"runnable": true,
+	"enabled": false,
+	"node": "m8",
+	"type": "MySQL 5.0",
+	"size": 3260416,
+	"glog": false,
+	"slog": true,
+	"ulog": false
 }
 
 Create a new database
@@ -1802,11 +1805,8 @@ POST /db/sampledb
 	"user": "sample",
 	"password": "pigeonbiscuits"
 }
-< 201
-< Content-Type: application/json
-{
-	"message": "Database successfully created"
-}
+< 205
+
 
 Remove a database process
 DELETE /db/sampledb
@@ -1901,25 +1901,54 @@ POST /support/123456
 Error Endpoints
 This section relates to endpoints that are only used to document possible errors and will not be in production. Error responses will have a standardized layout:
 
-	{
-		"error": string
+{
+	"errorType": {
 		"message": string
-		"reference": string
-		"response": object
-	}
+		"documentation": string
+		"reference": list
+		},
 
-The "error" value will contain a code to distinguish the error; the "message" value will contain a human-readable description of the error; the "reference" value will contain a link back to relevant documentation and the "response" value will contain more specific errors in validation, if necessary.
+	"errorType": {
+		"message": string
+		"documentation": string
+		"reference": list
+		},
+	...
+}
+
+The value of "errorType" will be a unique string to distinguish between errors; the value of "message" will be a human-readable description of the error; the value of "documentation" will be a hyperlink to relevant documentation and the value of the optional "reference" key will contain the keys of the offending entries
 --
+
+Sample error showing the response from multiple errors in a single request
+GET /manyErrors
+< 400
+< Content-Type: application/json
+{
+	"missingReqs": {
+		"message": "The previous request was missing some required parameters necessary for that endpoint.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		"reference": ["missingparameter1","missingparameter2","missingparameter3"]
+		},
+	"unnecessaryparameters": {
+		"message": "The previous request had parameters that were not relevant to the action.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		"reference": ["uselessparameter","spuriousparameter"]
+		},
+	"insufficientFunds": {
+		"message": "The account specified to fund this action cannot cover the cost.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
+}
 
 Error obtained by trying to access an endpoint over HTTP
 GET /needTLS
 < 426
 < Content-Type: application/json
 {
-	"error": "encryptionRequired",
-	"message": "All endpoints must be accessed over HTTPS.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
+	"encryptionRequired": {
+		"message": "All endpoints must be accessed over HTTPS.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
 }
 
 Error obtained by using an incorrect verb on an endpoint
@@ -1927,32 +1956,10 @@ GET /badVerb
 < 405
 < Content-Type: application/json
 {
-	"error": "invalidVerb",
-	"message": "Invalid verb on this endpoint.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
-}
-
-Error obtained by trying to access a resource that doesn't exist
-GET /noItem
-< 404
-< Content-Type: application/json
-{
-	"error": "invalidResource",
-	"message": "The resource the previous request is trying to access does not exist.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
-}
-
-Error obtained by trying to request an action that costs money when the associated account does not have enough to cover it
-GET /noCash
-< 402
-< Content-Type: application/json
-{
-	"error": "insufficientFunds",
-	"message": "The account specified to fund this action cannot cover the cost.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
+	"invalidVerb": {
+		"message": "Invalid verb on this endpoint.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
 }
 
 Error obtained by trying to access a resource either before being authorized or with invalid credentials 
@@ -1961,43 +1968,10 @@ GET /badAuth
 < 401
 < Content-Type: application/json
 {
-	"error": "invalidAuth",
-	"message": "Your authorization credentials are invalid.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
-}
-
-Error obtained by not including all required fields necessary for an endpoint
-GET /needReqs
-< 400
-< Content-Type: application/json
-{
-	"error": "missingReqs",
-	"message": "The previous request was missing some required fields necessary for that endpoint.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
-}
-
-Error obtained by including unnecessary fields in a request
-GET /uselessFields
-< 400
-< Content-Type: application/json
-{
-	"error": "unnecessaryFields",
-	"message": "The previous request had fields that were not relevant to the action.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
-}
-
-Error obtained by using an incorrect value in a field (e.g., using a number when a string is expected)
-GET /badField
-< 400
-< Content-Type: application/json
-{
-	"error": "invalidFields",
-	"message": "The previous request had one or more fields where the provided value was an incorrect type.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
+	"invalidAuth": {
+		"message": "Your authorization credentials are invalid.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
 }
 
 Error obtained by not formatting request in strictly valid JSON
@@ -2005,10 +1979,10 @@ GET /badJSON
 < 400
 < Content-Type: application/json
 {
-	"error": "invalidJSON",
-	"message": "The previous request was not formatted in valid JSON.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
+	"invalidJSON": {
+		"message": "The previous request was not formatted in valid JSON.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
 }
 
 Error obtained by using incorrect encoding with request
@@ -2016,8 +1990,66 @@ GET /badEncoding
 < 400
 < Content-Type: application/json
 {
-	"error": "invalidEncoding",
-	"message": "The previous request was not encoded in UTF-8.",
-	"reference": "http://docs.mischif.apiary.io/",
-	"response": {}
+	"invalidEncoding": {
+		"message": "The request was not encoded in UTF-8.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
+}
+
+Error obtained by trying to access a resource that doesn't exist
+GET /noItem
+< 404
+< Content-Type: application/json
+{
+	"invalidResource": {
+		"message": "The resource the previous request is trying to access does not exist.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
+}
+
+Error obtained by trying to request an action that costs money when the associated account does not have enough to cover it
+GET /noCash
+< 402
+< Content-Type: application/json
+{
+	"insufficientFunds": {
+		"message": "The account specified to fund this action cannot cover the cost.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		}
+}
+
+Error obtained by not including all required parameters necessary for an endpoint
+GET /needReqs
+< 400
+< Content-Type: application/json
+{
+	"missingReqs": {
+		"message": "The previous request was missing some required parameters necessary for that endpoint.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		"reference": ["missingparameter1","missingparameter2","missingparameter3"]
+		}
+}
+
+Error obtained by including unnecessary parameters in a request
+GET /uselessParams
+< 400
+< Content-Type: application/json
+{
+	"unnecessaryparameters": {
+		"message": "The previous request had parameters that were not relevant to the action.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		"reference": ["uselessparameter","spuriousparameter"]
+		}
+}
+
+Error obtained by using an incorrect value in a parameter (e.g., using a number when a string is expected)
+GET /badParams
+< 400
+< Content-Type: application/json
+{
+	"invalidparameters": {
+		"message": "The previous request had one or more parameters where the provided value was an incorrect type.",
+		"documentation": "http://docs.mischif.apiary.io/",
+		"reference": ["integervalue", "stringvalue"]
+		}
 }
