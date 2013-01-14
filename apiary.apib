@@ -209,7 +209,7 @@ Initiate registration for a new member
 POST /member
 > Content-Type: application/json
 {
-	"login": "sample",
+    "login": "sample",
 	"name": "Sample User",
 	"email": "sample@sample.com",
 	"reason": "I heard this was the best webhost on the internet :)",
@@ -1901,20 +1901,20 @@ POST /support/123456
 Error Endpoints
 This section relates to endpoints that are only used to document possible errors and will not be in production. Error responses will have a standardized layout:
 
-{
-	"errorType": {
-		"message": string
-		"documentation": string
-		"reference": list
-		},
+	{
+		"errorType": {
+			"message": string
+			"documentation": string
+			"reference": list
+			},
 
-	"errorType": {
-		"message": string
-		"documentation": string
-		"reference": list
-		},
-	...
-}
+		"errorType": {
+			"message": string
+			"documentation": string
+			"reference": list
+			},
+		...
+	}
 
 The value of "errorType" will be a unique string to distinguish between errors; the value of "message" will be a human-readable description of the error; the value of "documentation" will be a hyperlink to relevant documentation and the value of the optional "reference" key will contain the keys of the offending entries
 --
